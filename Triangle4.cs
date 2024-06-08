@@ -1,8 +1,8 @@
-﻿using System.Numerics;
+﻿namespace Maths;
 
-namespace Maths;
-
-public struct Triangle4
+public struct Triangle4 :
+    IAdditionOperators<Triangle4, Vector4, Triangle4>,
+    ISubtractionOperators<Triangle4, Vector4, Triangle4>
 {
     public Vector4 A, B, C;
 
@@ -22,7 +22,7 @@ public struct Triangle4
         planeNormal = Vector3.Normalize(planeNormal);
 
         // Return signed shortest distance from point to plane, plane normal must be normalized
-        float dist(Vector3 p) => (planeNormal.X * p.X) + (planeNormal.Y * p.Y) + (planeNormal.Z * p.Z) - Vector3.Dot(planeNormal, planePoint); 
+        float dist(Vector3 p) => (planeNormal.X * p.X) + (planeNormal.Y * p.Y) + (planeNormal.Z * p.Z) - Vector3.Dot(planeNormal, planePoint);
 
         Span<Vector3> insidePoints = stackalloc Vector3[3];
         int insidePointCount = 0;
@@ -87,9 +87,22 @@ public struct Triangle4
         return 0;
     }
 
-    public static implicit operator Triangle4(Triangle4Ex triangle) => new(triangle.PointA, triangle.PointB, triangle.PointC);
-    public static implicit operator Triangle4Ex(Triangle4 triangle) => new(triangle.A, triangle.B, triangle.C);
-  
-    public static implicit operator Triangle4(Triangle3 triangle) => new(triangle.A.To4(), triangle.B.To4(), triangle.C.To4());
-    public static implicit operator Triangle3(Triangle4 triangle) => new(triangle.A.To3(), triangle.B.To3(), triangle.C.To3());
+
+    public static explicit operator Triangle4(Triangle3 triangle) => new(triangle.A.To4(), triangle.B.To4(), triangle.C.To4());
+
+    public static Triangle4 operator +(Triangle4 tri, Vector4 vec)
+    {
+        tri.A += vec;
+        tri.B += vec;
+        tri.C += vec;
+        return tri;
+    }
+
+    public static Triangle4 operator -(Triangle4 tri, Vector4 vec)
+    {
+        tri.A -= vec;
+        tri.B -= vec;
+        tri.C -= vec;
+        return tri;
+    }
 }

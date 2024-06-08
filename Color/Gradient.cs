@@ -14,18 +14,10 @@ public struct Gradient : IEquatable<Gradient>
         B = b;
     }
 
-    public readonly ColorF Get(float v)
-    {
-        v = Math.Clamp(v, 0f, 1f);
-        return (A * (1f - v)) + (B * v);
-    }
+    public readonly ColorF Sample(float v) => ((1f - v) * A) + (v * B);
 
-    public override readonly bool Equals(object? obj) =>
-        obj is Gradient gradient &&
-        Equals(gradient);
-    public readonly bool Equals(Gradient other) =>
-        A.Equals(other.A) &&
-        B.Equals(other.B);
+    public override readonly bool Equals(object? obj) => obj is Gradient other && Equals(other);
+    public readonly bool Equals(Gradient other) => A.Equals(other.A) && B.Equals(other.B);
     public override readonly int GetHashCode() => HashCode.Combine(A, B);
 
     public static bool operator ==(Gradient left, Gradient right) => left.A == right.A && left.B == right.B;

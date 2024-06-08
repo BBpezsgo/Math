@@ -4,3 +4,4 @@
 [assembly: SuppressMessage("Style", "IDE0300:Simplify collection initialization")]
 [assembly: SuppressMessage("Roslynator", "RCS1139")]
 [assembly: SuppressMessage("Style", "IDE0303:Simplify collection initialization")]
+[assembly: SuppressMessage("Style", "IDE0302:Simplify collection initialization")]
