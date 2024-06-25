@@ -5,3 +5,5 @@
 [assembly: SuppressMessage("Roslynator", "RCS1139")]
 [assembly: SuppressMessage("Style", "IDE0303:Simplify collection initialization")]
 [assembly: SuppressMessage("Style", "IDE0302:Simplify collection initialization")]
+[assembly: SuppressMessage("Style", "IDE0161:Convert to file-scoped namespace")]
+[assembly: SuppressMessage("Style", "IDE0011:Add braces")]

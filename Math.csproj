@@ -4,10 +4,18 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <DefineConstants>LANG_10;LANG_11;LANG_12</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Win32-Stuff\Win32.csproj" />
+    <Compile Remove="NotSupportedDotnetFeatures\**" />
+    <EmbeddedResource Remove="NotSupportedDotnetFeatures\**" />
+    <None Remove="NotSupportedDotnetFeatures\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Math.asmdef" />
+    <None Remove="package.json" />
   </ItemGroup>
 
 </Project>
