@@ -1,4 +1,6 @@
-﻿namespace Maths
+﻿using System.Numerics;
+
+namespace Maths
 {
     public delegate TColor Quantizer<TColor>(TColor c);
 

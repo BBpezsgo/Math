@@ -12,7 +12,11 @@ namespace Maths
         public const float PI = MathF.PI;
         public const float Deg2Rad = MathF.PI / 180f;
         public const float Rad2Deg = 180f / MathF.PI;
+#if UNITY
         public static readonly float Epsilon = UnityEngineInternal.MathfInternal.IsFlushToZeroEnabled ? UnityEngineInternal.MathfInternal.FloatMinNormal : UnityEngineInternal.MathfInternal.FloatMinDenormal;
+#else
+        public const float Epsilon = float.Epsilon;
+#endif
         public static readonly float Sqrt2 = MathF.Sqrt(2);
 
 #if UNITY

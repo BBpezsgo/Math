@@ -6,10 +6,12 @@ namespace Maths
 {
     public static class Ballistics
     {
+#if UNITY
         public readonly struct ProfilerMarkers
         {
             public static readonly Unity.Profiling.ProfilerMarker TrajectoryMath = new("Game.Math.Trajectory");
         }
+#endif
 
         /// <summary>
         /// This is positive
@@ -525,7 +527,9 @@ namespace Maths
 
             float height = projectilePosition.Y - targetPosition.Y;
 
+#if UNITY
             using (ProfilerMarkers.TrajectoryMath.Auto())
+#endif
             {
                 // projectileVelocity *= .95f;
 
