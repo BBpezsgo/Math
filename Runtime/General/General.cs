@@ -19,27 +19,6 @@ namespace Maths
 #endif
         public static readonly float Sqrt2 = MathF.Sqrt(2);
 
-#if UNITY
-        /// <inheritdoc cref="Mathf.ClosestPowerOfTwo"/>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int ClosestPowerOfTwo(int value) => UnityEngine.Mathf.ClosestPowerOfTwo(value);
-        /// <inheritdoc cref="Mathf.IsPowerOfTwo"/>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool IsPowerOfTwo(int value) => UnityEngine.Mathf.IsPowerOfTwo(value);
-        /// <inheritdoc cref="Mathf.NextPowerOfTwo"/>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int NextPowerOfTwo(int value) => UnityEngine.Mathf.NextPowerOfTwo(value);
-        /// <inheritdoc cref="Mathf.GammaToLinearSpace"/>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static float GammaToLinearSpace(float value) => UnityEngine.Mathf.GammaToLinearSpace(value);
-        /// <inheritdoc cref="Mathf.LinearToGammaSpace"/>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static float LinearToGammaSpace(float value) => UnityEngine.Mathf.LinearToGammaSpace(value);
-        /// <inheritdoc cref="Mathf.CorrelatedColorTemperatureToRGB"/>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static UnityEngine.Color CorrelatedColorTemperatureToRGB(float kelvin) => UnityEngine.Mathf.CorrelatedColorTemperatureToRGB(kelvin);
-        /// <inheritdoc cref="Mathf.FloatToHalf"/>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static ushort FloatToHalf(float val) => UnityEngine.Mathf.FloatToHalf(val);
-        /// <inheritdoc cref="Mathf.HalfToFloat"/>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static float HalfToFloat(ushort val) => UnityEngine.Mathf.FloatToHalf(val);
-        /// <inheritdoc cref="Mathf.PerlinNoise"/>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static float PerlinNoise(float x, float y) => UnityEngine.Mathf.PerlinNoise(x, y);
-#endif
-
         public static float Min(params float[] values)
         {
             int n = values.Length;
@@ -126,19 +105,6 @@ namespace Maths
         public static float LerpUnclamped(float a, float b, float t) => a + ((b - a) * t);
 
         /// <summary>
-        /// Same as Lerp but makes sure the values interpolate correctly when they wrap around
-        /// 360 degrees.
-        /// </summary>
-        public static float LerpAngle(float a, float b, float t)
-        {
-            float num = Repeat(b - a, 360f);
-            if (num > 180f)
-            { num -= 360f; }
-
-            return a + (num * Math.Clamp(t, 0f, 1f));
-        }
-
-        /// <summary>
         /// Moves a value current towards target.
         /// </summary>
         public static float MoveTowards(float current, float target, float maxDelta)
@@ -147,20 +113,6 @@ namespace Maths
             { return target; }
 
             return current + (MathF.Sign(target - current) * maxDelta);
-        }
-
-        /// <summary>
-        /// Same as MoveTowards but makes sure the values interpolate correctly when they
-        /// wrap around 360 degrees.
-        /// </summary>
-        public static float MoveTowardsAngle(float current, float target, float maxDelta)
-        {
-            float num = DeltaAngle(current, target);
-            if (0f - maxDelta < num && num < maxDelta)
-            { return target; }
-
-            target = current + num;
-            return MoveTowards(current, target, maxDelta);
         }
 
         /// <summary>
@@ -229,26 +181,6 @@ namespace Maths
             return num7;
         }
 
-#if UNITY
-
-        public static float SmoothDampAngle(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed)
-        {
-            return SmoothDampAngle(current, target, ref currentVelocity, smoothTime, maxSpeed, UnityEngine.Time.deltaTime);
-        }
-
-        public static float SmoothDampAngle(float current, float target, ref float currentVelocity, float smoothTime)
-        {
-            return SmoothDampAngle(current, target, ref currentVelocity, smoothTime, float.PositiveInfinity, UnityEngine.Time.deltaTime);
-        }
-
-#endif
-
-        public static float SmoothDampAngle(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed, float deltaTime)
-        {
-            target = current + DeltaAngle(current, target);
-            return SmoothDamp(current, target, ref currentVelocity, smoothTime, maxSpeed, deltaTime);
-        }
-
         /// <summary>
         /// Loops the value <paramref name="t"/>, so that it is never larger than <paramref name="length"/> and never smaller than 0.
         /// </summary>
@@ -284,17 +216,6 @@ namespace Maths
             if (a != b)
             { return Math.Clamp((value - a) / (b - a), 0f, 1f); }
             return 0f;
-        }
-
-        /// <summary>
-        /// Calculates the shortest difference between two given angles given in degrees.
-        /// </summary>
-        public static float DeltaAngle(float current, float target)
-        {
-            float num = Repeat(target - current, 360f);
-            if (num > 180f)
-            { num -= 360f; }
-            return num;
         }
 
         public static bool LineIntersection(Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, ref Vector2 result)
@@ -345,26 +266,6 @@ namespace Maths
             byte[] array = new byte[8];
             r.NextBytes(array);
             return (long)(BitConverter.ToUInt64(array, 0) & 0x7FFFFFFFFFFFFFFFL);
-        }
-
-        /// <summary>
-        /// Normalizes <paramref name="angle"/> between <c>[-180,180[</c>
-        /// </summary>
-        public static float NormalizeAngle(float angle)
-        {
-            angle %= 360f;
-            if (angle > 180f) return angle - 360f;
-            else return angle;
-        }
-
-        /// <summary>
-        /// Normalizes <paramref name="angle"/> between <c>[0,360[</c>
-        /// </summary>
-        public static float NormalizeAngle360(float angle)
-        {
-            angle %= 360f;
-            if (angle < 0f) return angle + 360f;
-            else return angle;
         }
 
         public static float QuadraticEquation(float a, float b, float c, float sign)
@@ -514,19 +415,6 @@ namespace Maths
             return new Circle(new Vector2(h, k), r);
         }
 
-        public static float GetAngle(Vector2 dir)
-        {
-            dir = Vector2.Normalize(dir);
-            return MathF.Atan2(dir.Y, dir.X);
-        }
-
-        public static Vector2 RadianToVector2(float radian) => new(MathF.Cos(radian), MathF.Sin(radian));
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector2 DegreeToVector2(float degree) => RadianToVector2(degree * Deg2Rad);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float NormalizeDegree(float degree) => (degree + 360) % 360;
-
         public static Vector3 LengthDir(Vector3 center, float angle, float distance)
         {
             float x = distance * MathF.Cos((90 + angle) * Deg2Rad);
@@ -625,8 +513,7 @@ namespace Maths
             float denominator = ((p2.X - p1.X) * (p1.X - p3.X)) + ((p2.Y - p1.Y) * (p1.Y - p3.Y));
             float ratio = numerator / denominator;
 
-            float angleRad = MathF.Atan(ratio);
-            float angleDeg = (angleRad * 180) / MathF.PI;
+            float angleDeg = MathF.Atan(ratio) * Rotation.Rad2Deg;
 
             if (angleDeg < 0)
             { angleDeg = 180f + angleDeg; }
@@ -634,62 +521,23 @@ namespace Maths
             return angleDeg;
         }
 
-        public static float MapToRange(float outputStart, float outputEnd, float percent)
-        {
-            /* Note, "slope" below is a constant for given numbers, so if you are calculating
-               a lot of output values, it makes sense to calculate it once.  It also makes
-               understanding the Code easier */
-            float slope = outputEnd - outputStart;
-            return outputStart + (slope * percent);
-        }
+        public static float MapToRange(float percent, Range @in) => MapToRange(percent, @in.A, @in.B);
+        public static float MapToRange(float value, Range @in, Range @out) => MapToRange(value, @in.A, @in.B, @out.A, @out.B);
 
-        public static float MapToRange(float outputStart, float outputEnd, float inputStart, float inputEnd, float input)
-        {
-            /* Note, "slope" below is a constant for given numbers, so if you are calculating
-               a lot of output values, it makes sense to calculate it once.  It also makes
-               understanding the Code easier */
-            float slope = (outputEnd - outputStart) / (inputEnd - inputStart);
-            return outputStart + (slope * (input - inputStart));
-        }
+        public static float MapToRange(float percent, float outMin, float outMax) => outMin + ((outMax - outMin) * percent);
+        public static float MapToRange(float value, float inMin, float inMax, float outMin, float outMax) => outMin + ((outMax - outMin) / (inMax - inMin) * (value - inMin));
 
 #if UNITY
 
         public static (Vector3 Turret, Vector3 Barrel) TurretAim(Vector3 targetPosition, UnityEngine.Transform turret, UnityEngine.Transform barrel)
         {
-            float targetPlaneAngle = Vector3AngleOnPlane(targetPosition - turret.position.To(), -turret.up.To(), turret.forward.To());
+            float targetPlaneAngle = Rotation.Vector3AngleOnPlane(targetPosition - turret.position.To(), -turret.up.To(), turret.forward.To());
             Vector3 turretRotation = new(0f, targetPlaneAngle, 0f);
 
             float barrelAngle = UnityEngine.Vector3.Angle(targetPosition.To(), barrel.up);
             Vector3 barrelRotation = new(-barrelAngle + 90f, 0f, 0f);
 
             return (turretRotation, barrelRotation);
-        }
-
-        /// <summary>
-        /// Source: <see href="https://www.youtube.com/watch?v=bCz7awDbl58"/>
-        /// </summary>
-        /// <param name="from">
-        /// Target position
-        /// </param>
-        /// <param name="to">
-        /// Us
-        /// </param>
-        /// <param name="toZeroAngle">
-        /// Orientation
-        /// </param>
-        public static float Vector3AngleOnPlane(Vector3 from, Vector3 to, Vector3 planeNormal, Vector3 toZeroAngle)
-            => Vector3AngleOnPlane(from - to, planeNormal, toZeroAngle);
-
-        /// <summary>
-        /// Source: <see href="https://www.youtube.com/watch?v=bCz7awDbl58"/>
-        /// </summary>
-        /// <param name="toZeroAngle">
-        /// Orientation
-        /// </param>
-        public static float Vector3AngleOnPlane(Vector3 relativePosition, Vector3 planeNormal, Vector3 toZeroAngle)
-        {
-            UnityEngine.Vector3 projectedVector = UnityEngine.Vector3.ProjectOnPlane(relativePosition.To(), planeNormal.To());
-            return UnityEngine.Vector3.SignedAngle(projectedVector, toZeroAngle.To(), planeNormal.To());
         }
 
         public static Triangle3[]? GetTriangles(UnityEngine.Mesh mesh)
@@ -782,7 +630,7 @@ namespace Maths
             float v132 = triangle.A.X * triangle.C.Y * triangle.B.Z;
             float v213 = triangle.B.X * triangle.A.Y * triangle.C.Z;
             float v123 = triangle.A.X * triangle.B.Y * triangle.C.Z;
-            return (1f / 6f) * (-v321 + v231 + v312 - v132 - v213 + v123);
+            return 1f / 6f * (-v321 + v231 + v312 - v132 - v213 + v123);
         }
 
         public static float Distance(Vector3 a, Vector3 b)

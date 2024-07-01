@@ -310,9 +310,7 @@ namespace Maths
 
             float a = (v2 + dSqrt) / (G * x);
 
-            float a_ = MathF.Atan(a);
-
-            return a_;
+            return MathF.Atan(a);
         }
 
         /// <summary>
@@ -334,9 +332,7 @@ namespace Maths
 
             float b = (v2 - dSqrt) / (G * x);
 
-            float b_ = MathF.Atan(b);
-
-            return b_;
+            return MathF.Atan(b);
         }
 
         /// <param name="angleRad">Launch angle</param>

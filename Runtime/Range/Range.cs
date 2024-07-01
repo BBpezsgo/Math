@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Numerics;
 
 #nullable enable
 
@@ -53,6 +54,10 @@ namespace Maths
         public static implicit operator Range(ValueTuple<int, int> v) => new(v.Item1, v.Item2);
         public static implicit operator Range(ValueTuple<float, float> v) => new(v.Item1, v.Item2);
         public static implicit operator Range(float v) => new(v, v);
+        public static implicit operator Range(Vector2 v) => new(v.X, v.Y);
+#if UNITY
+        public static implicit operator Range(UnityEngine.Vector2 v) => new(v.x, v.y);
+#endif
 
         public static implicit operator ValueTuple<float, float>(Range v) => new(v.A, v.B);
 
