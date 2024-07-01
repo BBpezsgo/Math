@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Numerics;
 
 namespace Maths
@@ -30,10 +31,9 @@ namespace Maths
 
         public TransparentImage(IEnumerable<ColorF> data, int width, int height)
         {
-            Data = default; //data.Select(v => (TransparentColor)v).ToImmutableArray();
+            Data = data.Select(v => (TransparentColor)v).ToImmutableArray();
             Width = width;
             Height = height;
-            throw new NotImplementedException();
         }
 
         public static explicit operator TransparentImage(Image image) => new(image.Data, image.Width, image.Height);

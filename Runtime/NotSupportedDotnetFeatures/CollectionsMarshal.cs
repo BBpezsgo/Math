@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+#if UNITY
+
 namespace Maths
 {
     public static class CollectionsMarshal
@@ -8,3 +10,5 @@ namespace Maths
         public static Span<T> AsSpan<T>(List<T> values) => values.ToArray();
     }
 }
+
+#endif

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Numerics;
 
 namespace Maths
@@ -37,10 +38,9 @@ namespace Maths
 
         public Image(IEnumerable<TransparentColor> data, int width, int height)
         {
-            Data = default; // data.Select(v => (ColorF)v).ToImmutableArray();
+            Data = data.Select(v => (ColorF)v).ToImmutableArray();
             Width = width;
             Height = height;
-            throw new NotImplementedException();
         }
 
         public ColorF NormalizedSample(float texU, float texV)

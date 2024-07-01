@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+#if UNITY
+
 namespace Maths
 {
     public static class ImmutableArray
@@ -28,3 +30,5 @@ namespace Maths
         IEnumerator IEnumerable.GetEnumerator() => _array.GetEnumerator();
     }
 }
+
+#endif

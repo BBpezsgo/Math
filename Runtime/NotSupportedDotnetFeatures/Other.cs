@@ -1,5 +1,7 @@
 ﻿using System;
 
+#if UNITY
+
 namespace Maths
 {
     public interface IParsable<T> { }
@@ -25,3 +27,5 @@ namespace Maths
         }
     }
 }
+
+#endif
