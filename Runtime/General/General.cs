@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 #nullable enable
 
@@ -9,14 +10,8 @@ namespace Maths
 {
     public static class General
     {
-        public const float PI = MathF.PI;
         public const float Deg2Rad = MathF.PI / 180f;
         public const float Rad2Deg = 180f / MathF.PI;
-#if UNITY
-        public static readonly float Epsilon = UnityEngineInternal.MathfInternal.IsFlushToZeroEnabled ? UnityEngineInternal.MathfInternal.FloatMinNormal : UnityEngineInternal.MathfInternal.FloatMinDenormal;
-#else
-        public const float Epsilon = float.Epsilon;
-#endif
         public static readonly float Sqrt2 = MathF.Sqrt(2);
 
         public static float Min(params float[] values)
@@ -87,12 +82,77 @@ namespace Maths
             return result;
         }
 
-        public static float Clamp01(float value)
+#if LANG_13
+
+        public static float Min(params ReadOnlySpan<float> values)
         {
-            if (value < 0f) return 0f;
-            if (value > 1f) return 1f;
-            return value;
+            int n = values.Length;
+            if (n == 0) return 0f;
+
+            float result = values[0];
+            for (int i = 1; i < n; i++)
+            {
+                if (values[i] < result)
+                {
+                    result = values[i];
+                }
+            }
+
+            return result;
         }
+
+        public static int Min(params ReadOnlySpan<int> values)
+        {
+            int n = values.Length;
+            if (n == 0) return 0;
+
+            int result = values[0];
+            for (int i = 1; i < n; i++)
+            {
+                if (values[i] < result)
+                {
+                    result = values[i];
+                }
+            }
+
+            return result;
+        }
+
+        public static float Max(params ReadOnlySpan<float> values)
+        {
+            int n = values.Length;
+            if (n == 0) return 0f;
+
+            float result = values[0];
+            for (int i = 1; i < n; i++)
+            {
+                if (values[i] > result)
+                {
+                    result = values[i];
+                }
+            }
+
+            return result;
+        }
+
+        public static int Max(params ReadOnlySpan<int> values)
+        {
+            int n = values.Length;
+            if (n == 0) return 0;
+
+            int result = values[0];
+            for (int i = 1; i < n; i++)
+            {
+                if (values[i] > result)
+                {
+                    result = values[i];
+                }
+            }
+
+            return result;
+        }
+
+#endif
 
         /// <summary>
         /// Linearly interpolates between a and b by t.
@@ -141,7 +201,7 @@ namespace Maths
         /// </summary>
         public static bool Approximately(float a, float b)
         {
-            return MathF.Abs(b - a) < MathF.Max(1E-06f * MathF.Max(MathF.Abs(a), MathF.Abs(b)), Epsilon * 8f);
+            return MathF.Abs(b - a) < MathF.Max(1E-06f * MathF.Max(MathF.Abs(a), MathF.Abs(b)), FloatUtils.Epsilon * 8f);
         }
 
 #if UNITY
@@ -160,7 +220,7 @@ namespace Maths
 
         public static float SmoothDamp(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed, float deltaTime)
         {
-            smoothTime = MathF.Max(0.0001f, smoothTime);
+            smoothTime = MathF.Max(FloatUtils.Epsilon, smoothTime);
             float num = 2f / smoothTime;
             float num2 = num * deltaTime;
             float num3 = 1f / (1f + num2 + (0.48f * num2 * num2) + (0.235f * num2 * num2 * num2));
@@ -172,7 +232,7 @@ namespace Maths
             float num6 = (currentVelocity + (num * value)) * deltaTime;
             currentVelocity = (currentVelocity - (num * num6)) * num3;
             float num7 = target + ((value + num6) * num3);
-            if ((num4 - current > 0f) == (num7 > num4))
+            if ((num4 > current) == (num7 > num4))
             {
                 num7 = num4;
                 currentVelocity = (num7 - num4) / deltaTime;
@@ -249,11 +309,11 @@ namespace Maths
             float num6 = p3.X - p1.X;
             float num7 = p3.Y - p1.Y;
             float num8 = ((num6 * num4) - (num7 * num3)) / num5;
-            if (num8 < 0f || num8 > 1f)
+            if (num8 is < 0f or > 1f)
             { return false; }
 
             float num9 = ((num6 * num2) - (num7 * num)) / num5;
-            if (num9 < 0f || num9 > 1f)
+            if (num9 is < 0f or > 1f)
             { return false; }
 
             result.X = p1.X + (num8 * num);
@@ -261,18 +321,12 @@ namespace Maths
             return true;
         }
 
-        public static long RandomToLong(System.Random r)
-        {
-            byte[] array = new byte[8];
-            r.NextBytes(array);
-            return (long)(BitConverter.ToUInt64(array, 0) & 0x7FFFFFFFFFFFFFFFL);
-        }
-
         public static float QuadraticEquation(float a, float b, float c, float sign)
         {
             float discriminant = (b * b) - (4 * a * c);
             return (-b + (sign * MathF.Sqrt(discriminant))) / (2 * a);
         }
+
         public static (float, float) QuadraticEquation(float a, float b, float c)
         {
             float discriminant = (b * b) - (4 * a * c);
@@ -282,6 +336,7 @@ namespace Maths
 
             return (x1, x2);
         }
+
         public static float Sum(params float[] values)
         {
             float sum = 0f;
@@ -290,12 +345,26 @@ namespace Maths
             return sum;
         }
 
+#if LANG_13
+
+        public static float Sum(params ReadOnlySpan<float> values)
+        {
+            float sum = 0f;
+            for (int i = 0; i < values.Length; i++)
+            { sum += values[i]; }
+            return sum;
+        }
+
+#endif
+
         public static float Average(params float[] values) => Sum(values) / values.Length;
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Average(float a, float b) => (a + b) / 2;
+        public static float Average(float a, float b) => (a + b) / 2f;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Difference(float a, float b) => MathF.Abs(a - b);
+
         public static Vector2 Difference(Vector2 a, Vector2 b) => new(
             Difference(a.X, b.X),
             Difference(a.Y, b.Y)
@@ -305,8 +374,6 @@ namespace Maths
             Difference(a.Y, b.Y),
             Difference(a.Z, b.Z)
         );
-
-        public static Vector3 Mult(Vector3 a, Vector3 b) => new(a.X * b.X, a.Y * b.Y, a.Z * b.Z);
 
         public struct Circle
         {
@@ -320,7 +387,7 @@ namespace Maths
             }
 
             public override readonly string ToString()
-                => $"Circle{{ Center: ({Center.X}, {Center.Y}) radius: {Radius} }}";
+                => $"Circle{{ Center: ({Center.X}, {Center.Y}) Radius: {Radius} }}";
 
             public readonly Vector2 GetPoint(float rad)
             {
@@ -352,7 +419,7 @@ namespace Maths
             public readonly float Circumference()
                 => MathF.PI * 2 * Radius;
 
-            public static Vector2[] GenerateEquadistancePoints(int n, float radius)
+            public static Span<Vector2> GenerateEquadistancePoints(int n, float radius)
             {
                 List<Vector2> points = new();
 
@@ -366,7 +433,7 @@ namespace Maths
                     points.Add(new Vector2(x, y));
                 }
 
-                return points.ToArray();
+                return CollectionsMarshal.AsSpan(points);
             }
         }
 
@@ -432,7 +499,7 @@ namespace Maths
             public bool IsGrouped;
         }
 
-        static PointGroup[] GeneratePointGroups(Vector2[] points)
+        static PointGroup[] GeneratePointGroups(ReadOnlySpan<Vector2> points)
         {
             PointGroup[] groups = new PointGroup[points.Length];
             for (int i = 0; i < points.Length; i++)
@@ -442,7 +509,7 @@ namespace Maths
             return groups;
         }
 
-        static Vector2[][] GetGroupsFromGroups(PointGroup[] pointGroups)
+        static ReadOnlySpan<Vector2[]> GetGroupsFromGroups(ReadOnlySpan<PointGroup> pointGroups)
         {
             List<List<Vector2>> vector2s = new();
             Dictionary<int, int> groupIdToIndex = new();
@@ -463,10 +530,10 @@ namespace Maths
             {
                 vector2s1.Add(item.ToArray());
             }
-            return vector2s1.ToArray();
+            return CollectionsMarshal.AsSpan(vector2s1);
         }
 
-        public static Vector2[][] GroupPoints(Vector2[] points, float tolerance)
+        public static ReadOnlySpan<Vector2[]> GroupPoints(ReadOnlySpan<Vector2> points, float tolerance)
         {
             PointGroup[] colls = GeneratePointGroups(points);
             for (int i = 0; i < colls.Length; i++)
@@ -612,7 +679,7 @@ namespace Maths
 
 #endif
 
-        public static float Volume(Triangle3[] triangles)
+        public static float Volume(ReadOnlySpan<Triangle3> triangles)
         {
             float volumeSum = default;
 

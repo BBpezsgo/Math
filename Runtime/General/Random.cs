@@ -31,14 +31,14 @@ namespace Maths
         }
 
         public static float Float() => (float)Shared.NextDouble();
-        public static float Float(float max) => (float)Shared.NextDouble() * max;
-        public static float Float(float min, float max) => ((float)Shared.NextDouble() * (max - min)) + min;
-        public static float Float(Range range) => ((float)Shared.NextDouble() * (range.B - range.A)) + range.A;
+        public static float Float(float max) => Shared.Float() * max;
+        public static float Float(float min, float max) => (Shared.Float() * (max - min)) + min;
+        public static float Float(Range range) => (Shared.Float() * (range.B - range.A)) + range.A;
 
-        public static float Float(this System.Random random) => (float)random.NextDouble();
-        public static float Float(this System.Random random, float max) => (float)random.NextDouble() * max;
-        public static float Float(this System.Random random, float min, float max) => ((float)random.NextDouble() * (max - min)) + min;
-        public static float Float(this System.Random random, Range range) => ((float)random.NextDouble() * (range.B - range.A)) + range.A;
+        public static float Float(this System.Random random) => random.Float();
+        public static float Float(this System.Random random, float max) => random.Float() * max;
+        public static float Float(this System.Random random, float min, float max) => (random.Float() * (max - min)) + min;
+        public static float Float(this System.Random random, Range range) => (random.Float() * (range.B - range.A)) + range.A;
 
         public static Vector2 Direction()
         {
@@ -53,8 +53,8 @@ namespace Maths
 
         public static Vector2 Direction(this System.Random random)
         {
-            float x = ((float)random.NextDouble() - .5f) * 2f * MathF.PI * 2f;
-            float y = ((float)random.NextDouble() - .5f) * 2f * MathF.PI * 2f;
+            float x = (random.Float() - .5f) * 2f * MathF.PI * 2f;
+            float y = (random.Float() - .5f) * 2f * MathF.PI * 2f;
 
             x = MathF.Cos(x);
             y = MathF.Sin(y);
@@ -64,8 +64,8 @@ namespace Maths
 
         public static Vector3 Direction3()
         {
-            float theta = 2f * MathF.PI * (float)Shared.NextDouble();
-            float phi = MathF.Acos(1 - (2 * (float)Shared.NextDouble()));
+            float theta = 2f * MathF.PI * Shared.Float();
+            float phi = MathF.Acos(1 - (2 * Shared.Float()));
             float x = MathF.Sin(phi) * MathF.Cos(theta);
             float y = MathF.Sin(phi) * MathF.Sin(theta);
             float z = MathF.Cos(phi);
@@ -75,8 +75,8 @@ namespace Maths
 
         public static Vector3 Direction3(this System.Random random)
         {
-            float theta = 2f * MathF.PI * (float)random.NextDouble();
-            float phi = MathF.Acos(1 - (2 * (float)random.NextDouble()));
+            float theta = 2f * MathF.PI * random.Float();
+            float phi = MathF.Acos(1 - (2 * random.Float()));
             float x = MathF.Sin(phi) * MathF.Cos(theta);
             float y = MathF.Sin(phi) * MathF.Sin(theta);
             float z = MathF.Cos(phi);

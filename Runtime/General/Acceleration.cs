@@ -33,11 +33,15 @@ namespace Maths
         }
 
         /// <summary>
-        /// <b>v * t + ½ * a * t²</b> <br/><br/>
-        /// 
+        /// <para>
+        /// <b>v * t + ½ * a * t²</b>
+        /// </para>
+        ///
+        /// <para>
         /// v: <paramref name="velocity"/> <br/>
         /// a: <paramref name="acceleration"/> <br/>
         /// t: <paramref name="time"/> <br/>
+        /// </para>
         /// </summary>
         public static float DistanceAfterTime(float velocity, float acceleration, float time)
         {
@@ -45,15 +49,21 @@ namespace Maths
         }
 
         /// <summary>
+        /// <para>
         /// <b>Δv / a</b> <br/>
         /// or <br/>
-        /// <b>(v - vₒ) / a</b> <br/><br/>
-        /// 
-        /// If <paramref name="targetVelocity"/> can't be reached, it returns <see cref="LargeNumber"/> to avoid division by zero. <br/><br/>
-        /// 
+        /// <b>(v - vₒ) / a</b>
+        /// </para>
+        ///
+        /// <para>
+        /// If <paramref name="targetVelocity"/> can't be reached, it returns <see cref="LargeNumber"/> to avoid division by zero.
+        /// </para>
+        ///
+        /// <para>
         /// v: <paramref name="targetVelocity"/> <br/>
         /// vₒ: <paramref name="initialVelocity"/> <br/>
         /// a: <paramref name="acceleration"/> <br/>
+        /// </para>
         /// </summary>
         public static float TimeToReachVelocity(float initialVelocity, float targetVelocity, float acceleration)
         {
@@ -65,12 +75,18 @@ namespace Maths
         }
 
         /// <summary>
-        /// <b>-vₒ / a</b> <br/><br/>
-        /// 
-        /// If 0 velocity can't be reached, it returns <see cref="LargeNumber"/> to avoid division by zero. <br/><br/>
-        /// 
+        /// <para>
+        /// <b>-vₒ / a</b>
+        /// </para>
+        ///
+        /// <para>
+        /// If 0 velocity can't be reached, it returns <see cref="LargeNumber"/> to avoid division by zero.
+        /// </para>
+        ///
+        /// <para>
         /// vₒ: <paramref name="initialVelocity"/> <br/>
         /// a: <paramref name="acceleration"/> <br/>
+        /// </para>
         /// </summary>
         public static float TimeToStop(float initialVelocity, float acceleration)
         {
@@ -82,12 +98,16 @@ namespace Maths
         }
 
         /// <summary>
-        /// <b>vₒ * t + ½ * a * t²</b> <br/><br/>
-        /// 
+        /// <para>
+        /// <b>vₒ * t + ½ * a * t²</b>
+        /// </para>
+        ///
+        /// <para>
         /// v: <paramref name="targetVelocity"/> <br/>
         /// vₒ: <paramref name="initialVelocity"/> <br/>
         /// a: <paramref name="acceleration"/> <br/>
         /// t: <see cref="TimeToReachVelocity(float, float, float)"/> <br/>
+        /// </para>
         /// </summary>
         public static float DistanceToReachVelocity(float initialVelocity, float targetVelocity, float acceleration)
         {
@@ -99,11 +119,15 @@ namespace Maths
         }
 
         /// <summary>
-        /// <b>vₒ * t + ½ * -a * t²</b> <br/><br/>
-        /// 
+        /// <para>
+        /// <b>vₒ * t + ½ * -a * t²</b>
+        /// </para>
+        ///
+        /// <para>
         /// vₒ: <paramref name="velocity"/> <br/>
         /// a: -<paramref name="braking"/> <br/>
         /// t: <see cref="TimeToStop(float, float)"/> <br/>
+        /// </para>
         /// </summary>
         public static float DistanceToStop(float velocity, float braking)
         {
@@ -115,15 +139,19 @@ namespace Maths
         }
 
         /// <summary>
-        /// <b>(vₒ + v)/2 * t</b> <br/><br/>
-        /// 
+        /// <para>
+        /// <b>(vₒ + v)/2 * t</b>
+        /// </para>
+        ///
+        /// <para>
         /// vₒ: <paramref name="initialVelocity"/> <br/>
         /// vₒ: <paramref name="topVelocity"/> <br/>
         /// t: <paramref name="time"/> <br/>
+        /// </para>
         /// </summary>
         public static float CalculateDistanceFromSpeed(float initialVelocity, float topVelocity, float time)
         {
-            return (initialVelocity + topVelocity) / 2 * time;
+            return (initialVelocity + topVelocity) / 2f * time;
         }
 
         public static float CalculateTime(float initialVelocity, float topVelocity, float timeToSpeedUp, float distance, float acceleration)

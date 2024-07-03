@@ -14,7 +14,7 @@ namespace Maths
             matrix[3, 3] = 0f;
         }
 
-        public static void MakeProjection(ref Matrix4x4 matrix, System.Numerics.Vector3 v)
+        public static void MakeProjection(ref Matrix4x4 matrix, Vector3 v)
         {
             matrix[0, 0] = 1f;
             matrix[1, 1] = 1f;
@@ -36,14 +36,14 @@ namespace Maths
             matrix[3, 2] = z;
         }
 
-        public static void MakePointAt(ref Matrix4x4 matrix, System.Numerics.Vector3 position, System.Numerics.Vector3 target, System.Numerics.Vector3 up)
+        public static void MakePointAt(ref Matrix4x4 matrix, Vector3 position, Vector3 target, Vector3 up)
         {
-            System.Numerics.Vector3 newForward = System.Numerics.Vector3.Normalize(target - position);
+            Vector3 newForward = Vector3.Normalize(target - position);
 
-            System.Numerics.Vector3 a = newForward * System.Numerics.Vector3.Dot(up, newForward);
-            System.Numerics.Vector3 newUp = System.Numerics.Vector3.Normalize(up - a);
+            Vector3 a = newForward * Vector3.Dot(up, newForward);
+            Vector3 newUp = Vector3.Normalize(up - a);
 
-            System.Numerics.Vector3 newRight = System.Numerics.Vector3.Cross(newUp, newForward);
+            Vector3 newRight = Vector3.Cross(newUp, newForward);
 
             matrix[0, 0] = newRight.X;
             matrix[0, 1] = newRight.Y;

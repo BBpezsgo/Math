@@ -38,6 +38,7 @@ namespace Maths
         public void Clear() => Array.Clear(_array, 0, _array.Length);
         public IEnumerator<T> GetEnumerator() => ((IEnumerable<T>)_array).GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => _array.GetEnumerator();
+        public override string ToString() => $"({Width}x{Height})";
 
         public bool IsVisible(int x, int y) => x >= 0 && y >= 0 && x < Width && y < Height;
         public bool IsVisible(Vector2Int p) => p.X >= 0 && p.Y >= 0 && p.X < Width && p.Y < Height;

@@ -6,7 +6,6 @@ using System.Numerics;
 
 namespace Maths
 {
-    [DebuggerDisplay("{{" + nameof(GetDebuggerDisplay) + "(),nq}}")]
     public struct Range : IEquatable<Range>
     {
         public float A;
@@ -61,7 +60,6 @@ namespace Maths
 
         public static implicit operator ValueTuple<float, float>(Range v) => new(v.A, v.B);
 
-        public override readonly string ToString() => $"( {A} -> {B} )";
-        readonly string GetDebuggerDisplay() => ToString();
+        public override readonly string ToString() => $"({A:0.00} -> {B:0.00})";
     }
 }

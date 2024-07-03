@@ -7,7 +7,6 @@ using System.Numerics;
 
 namespace Maths
 {
-    [DebuggerDisplay("{{" + nameof(GetDebuggerDisplay) + "(),nq}}")]
     public struct RectF : IEquatable<RectF>
     {
         public float X;
@@ -107,8 +106,7 @@ namespace Maths
         public static bool operator ==(RectF left, RectF right) => left.Equals(right);
         public static bool operator !=(RectF left, RectF right) => !(left == right);
 
-        public override readonly string ToString() => $"({X.ToString("0.00", CultureInfo.InvariantCulture)}, {Y.ToString("0.00", CultureInfo.InvariantCulture)}, {Width.ToString("0.00", CultureInfo.InvariantCulture)}, {Height.ToString("0.00", CultureInfo.InvariantCulture)})";
-        readonly string GetDebuggerDisplay() => ToString();
+        public override readonly string ToString() => $"(X: {X:0.00} Y: {Y:0.00} W: {Width:0.00} H: {Height:0.00})";
 
         public RectF Expand(int v)
         {

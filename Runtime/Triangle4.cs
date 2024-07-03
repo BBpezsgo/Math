@@ -25,7 +25,11 @@ namespace Maths
             planeNormal = Vector3.Normalize(planeNormal);
 
             // Return signed shortest distance from point to plane, plane normal must be normalized
-            float dist(Vector3 p) => (planeNormal.X * p.X) + (planeNormal.Y * p.Y) + (planeNormal.Z * p.Z) - Vector3.Dot(planeNormal, planePoint);
+            float Distance(Vector3 p) =>
+                (planeNormal.X * p.X) +
+                (planeNormal.Y * p.Y) +
+                (planeNormal.Z * p.Z) -
+                Vector3.Dot(planeNormal, planePoint);
 
             Span<Vector3> insidePoints = stackalloc Vector3[3];
             int insidePointCount = 0;
@@ -33,9 +37,9 @@ namespace Maths
             Span<Vector3> outsidePoints = stackalloc Vector3[3];
             int outsidePointCount = 0;
 
-            float d0 = dist(triangleIn.A.To3());
-            float d1 = dist(triangleIn.B.To3());
-            float d2 = dist(triangleIn.C.To3());
+            float d0 = Distance(triangleIn.A.To3());
+            float d1 = Distance(triangleIn.B.To3());
+            float d2 = Distance(triangleIn.C.To3());
 
             if (d0 >= 0f)
             { insidePoints[insidePointCount++] = triangleIn.A.To3(); }
@@ -89,7 +93,6 @@ namespace Maths
 
             return 0;
         }
-
 
         public static explicit operator Triangle4(Triangle3 triangle) => new(triangle.A.To4(), triangle.B.To4(), triangle.C.To4());
 

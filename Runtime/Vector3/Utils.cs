@@ -46,8 +46,6 @@ namespace Maths
 
         public static float Dot(this Vector3 a, Vector3 b) => (b.X * a.X) + (b.Y * a.Y) + (b.Z * a.Z);
 
-        // public static float Dot(this Vector3 a, Point4 b) => (a.X * b.X) + (a.Y * b.Y) + (a.Z * b.Z);
-
         public static Vector3 Abs(Vector3 v) => new(Math.Abs(v.X), Math.Abs(v.Y), Math.Abs(v.Z));
 
         public static Vector3 Max(Vector3 a, Vector3 b) => new(Math.Max(a.X, b.X), Math.Max(a.Y, b.Y), Math.Max(a.Z, b.Z));

@@ -2,9 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
+    <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <DefineConstants>LANG_10;LANG_11;LANG_12</DefineConstants>
+    <DefineConstants>LANG_10;LANG_11;LANG_12;LANG_13</DefineConstants>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,6 +17,7 @@
   <ItemGroup>
     <None Remove="Math.asmdef" />
     <None Remove="package.json" />
+    <None Remove="**/*.meta" />
   </ItemGroup>
 
 </Project>

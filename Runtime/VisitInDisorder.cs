@@ -96,14 +96,21 @@ namespace Maths
     {
         public static IEnumerable<int> Disorder(this RangeInt range)
         {
-            VisitInDisorder visit = new((long)(range.B - range.A));
+            VisitInDisorder visit = new(range.B - range.A);
             while (visit.HasNext)
             { yield return (int)(visit.Next() + range.A); }
         }
 
         public static IEnumerable<T> Disorder<T>(this IReadOnlyList<T> values)
         {
-            VisitInDisorder visit = new((long)values.Count);
+            VisitInDisorder visit = new(values.Count);
+            while (visit.HasNext)
+            { yield return values[(int)visit.Next()]; }
+        }
+
+        public static IEnumerable<T> Disorder<T>(this ReadOnlySpan<T> values)
+        {
+            VisitInDisorder visit = new(values.Length);
             while (visit.HasNext)
             { yield return values[(int)visit.Next()]; }
         }

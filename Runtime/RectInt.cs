@@ -6,7 +6,6 @@ using System.Numerics;
 
 namespace Maths
 {
-    [DebuggerDisplay("{{" + nameof(GetDebuggerDisplay) + "(),nq}}")]
     public struct RectInt : IEquatable<RectInt>
     {
         public int X;
@@ -120,8 +119,7 @@ namespace Maths
         public static implicit operator RectF(RectInt v) => new(v.X, v.Y, v.Width, v.Height);
         public static explicit operator RectInt(RectF v) => new((int)v.X, (int)v.Y, (int)v.Width, (int)v.Height);
 
-        public override readonly string ToString() => $"({X} {Y} {Width} {Height})";
-        readonly string GetDebuggerDisplay() => ToString();
+        public override readonly string ToString() => $"(X: {X} Y: {Y} W: {Width} H: {Height})";
 
         public RectInt Expand(int v)
         {

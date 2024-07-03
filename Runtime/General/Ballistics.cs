@@ -260,10 +260,10 @@ namespace Maths
         }
 
         public static float CalculateY(float angleRad, float t, float v)
-            => (v * MathF.Sin(angleRad) * t) - ((G * t * t) / 2f);
+            => (v * MathF.Sin(angleRad) * t) - (G * t * t / 2f);
 
         public static float CalculateTimeToMaxHeight(float angleRad, float v)
-            => (v * MathF.Sin(angleRad)) / G;
+            => v * MathF.Sin(angleRad) / G;
 
         /// <summary>
         /// To hit a target at range x and altitude y when fired from (0,0) and with initial speed v.
@@ -339,20 +339,24 @@ namespace Maths
         /// <param name="v">Initial velocity</param>
         /// <returns>The greatest height that the object will reach</returns>
         public static float MaxHeight(float angleRad, float v)
-            => (v * v * MathF.Pow(MathF.Sin(angleRad), 2f)) / (2f * G);
+            => v * v * MathF.Pow(MathF.Sin(angleRad), 2f) / (2f * G);
 
         /// <summary>
+        /// <para>
         /// The "angle of reach" is the angle at which a projectile must be launched in order to go a distance <paramref name="d"/>, given the initial velocity <paramref name="v"/>.
+        /// </para>
+        /// <para>
         /// <seealso href="https://en.wikipedia.org/wiki/Projectile_motion#Angle_of_reach"/>
+        /// </para>
         /// </summary>
         /// <param name="v">Initial velocity</param>
         /// <param name="d">Target distance</param>
         /// <returns><c>(shallow, steep)</c> in radians or <c><see langword="null"/></c> if there is no solution</returns>
         public static (float, float)? AngleOfReach(float v, float d)
         {
-            float a = (G * d) / v * v;
+            float a = G * d / v * v;
 
-            if (a < -1f || a > 1f) return null;
+            if (a is < (-1f) or > 1f) return null;
 
             float shallow = 0.5f * MathF.Asin(a);
             float steep = 0.5f * MathF.Acos(a);
@@ -362,11 +366,11 @@ namespace Maths
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Radius(float v, float angleRad)
-            => ((v * v) / G) * MathF.Sin(angleRad * 2f);
+            => v * v / G * MathF.Sin(angleRad * 2f);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float MaxRadius(float v)
-            => (v * v) / G;
+            => v * v / G;
 
         /// <param name="angleRad">Launch angle</param>
         /// <param name="v">Initial velocity</param>
@@ -430,14 +434,18 @@ namespace Maths
         }
 
         /// <summary>
+        /// <para>
         /// The total time for which the projectile remains in the air.
+        /// </para>
+        /// <para>
         /// <seealso href="https://en.wikipedia.org/wiki/Projectile_motion#Time_of_flight_or_total_time_of_the_whole_journey"/>
+        /// </para>
         /// </summary>
         /// <param name="v">Initial velocity</param>
         /// <param name="angleRad">Launch angle</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float TimeOfFlight(float v, float angleRad)
-            => (2f * v * MathF.Sin(angleRad)) / G;
+            => 2f * v * MathF.Sin(angleRad) / G;
 
         public static float? TimeToReachDistance(float v, float angleRad, float d)
         {
@@ -449,15 +457,19 @@ namespace Maths
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float MaxHeight2(float d, float angleRad)
-            => (d * MathF.Tan(angleRad)) / 4;
+            => d * MathF.Tan(angleRad) / 4;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 GetPosition(Vector2 v, float t)
             => (v * t) + (t * t * GVector / 2);
 
         /// <summary>
+        /// <para>
         /// <see href="https://www.toppr.com/guides/physics/motion-in-a-plane/projectile-motion/"/>
+        /// </para>
+        /// <para>
         /// <c>y = (tan θ) * x – g (x ^ 2) / 2 * (v * cos θ) ^ 2</c>
+        /// </para>
         /// </summary>
         public static float GetHeight(float d, float angleRad, float v)
         {

@@ -5,7 +5,6 @@ using System.Diagnostics;
 
 namespace Maths
 {
-    [DebuggerDisplay("{{" + nameof(GetDebuggerDisplay) + "(),nq}}")]
     public struct RangeInt : IEquatable<RangeInt>
     {
         public int A;
@@ -58,7 +57,6 @@ namespace Maths
 
         public static implicit operator ValueTuple<int, int>(RangeInt v) => new(v.A, v.B);
 
-        public override readonly string ToString() => $"( {A} -> {B} )";
-        readonly string GetDebuggerDisplay() => ToString();
+        public override readonly string ToString() => $"({A} -> {B})";
     }
 }

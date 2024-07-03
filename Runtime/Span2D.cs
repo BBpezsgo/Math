@@ -32,6 +32,7 @@ namespace Maths
         public void Clear() => _span.Clear();
         public void Fill(T value) => _span.Fill(value);
         public Span<T>.Enumerator GetEnumerator() => _span.GetEnumerator();
+        public override string ToString() => $"({Width}x{Height})";
 
         public static implicit operator Span2D<T>(Array2D<T> v) => new(v.AsArray(), v.Width);
 

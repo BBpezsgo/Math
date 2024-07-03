@@ -1,4 +1,5 @@
-﻿
+﻿using System.Collections.Immutable;
+
 #if UNITY
 
 namespace Maths

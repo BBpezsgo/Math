@@ -10,7 +10,7 @@ namespace Maths
         ILargeMatrix<Matrix4x4, Matrix3x3>,
         IMultiplyOperators<Matrix4x4, Vector3, Vector3>,
         IMultiplyOperators<Matrix4x4, Point4, Point4>,
-        IMultiplyOperators<Matrix4x4, System.Numerics.Vector4, System.Numerics.Vector4>
+        IMultiplyOperators<Matrix4x4, Vector4, Vector4>
     {
         const int Rows = 4;
         const int Columns = 4;
@@ -223,7 +223,7 @@ namespace Maths
             (a[3, 0] * b.X) + (a[3, 1] * b.Y) + (a[3, 2] * b.Z) + (a[3, 3] * b.W)
         );
 
-        public static System.Numerics.Vector4 operator *(Matrix4x4 a, System.Numerics.Vector4 b) => new(
+        public static Vector4 operator *(Matrix4x4 a, Vector4 b) => new(
             (a[0, 0] * b.X) + (a[0, 1] * b.Y) + (a[0, 2] * b.Z) + (a[0, 3] * b.W),
             (a[1, 0] * b.X) + (a[1, 1] * b.Y) + (a[1, 2] * b.Z) + (a[1, 3] * b.W),
             (a[2, 0] * b.X) + (a[2, 1] * b.Y) + (a[2, 2] * b.Z) + (a[2, 3] * b.W),

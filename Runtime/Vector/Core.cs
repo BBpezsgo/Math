@@ -8,15 +8,15 @@ namespace Maths
     public static partial class Vector
     {
         public static Vector4 To4(this Vector2 v) => new(v.X, v.Y, 0f, 1f);
-        public static Vector4 To4(this System.Numerics.Vector3 v) => new(v.X, v.Y, v.Z, 1f);
+        public static Vector4 To4(this Vector3 v) => new(v.X, v.Y, v.Z, 1f);
 
-        public static System.Numerics.Vector3 To3(this Vector4 v) => new(v.X, v.Y, v.Z);
-        public static System.Numerics.Vector3 To3(this Vector2 v) => new(v.X, v.Y, 0f);
+        public static Vector3 To3(this Vector4 v) => new(v.X, v.Y, v.Z);
+        public static Vector3 To3(this Vector2 v) => new(v.X, v.Y, 0f);
 
         public static Vector2 To2(this Vector4 v) => new(v.X, v.Y);
-        public static Vector2 To2(this System.Numerics.Vector3 v) => new(v.X, v.Y);
+        public static Vector2 To2(this Vector3 v) => new(v.X, v.Y);
 
-        public static bool TryParse(string text, out System.Numerics.Vector3 vector3)
+        public static bool TryParse(string text, out Vector3 vector3)
         {
             vector3 = default;
             text = text.Trim();
@@ -53,8 +53,8 @@ namespace Maths
         }
 
         public static bool IsOk(this Vector3 v) =>
-            v.X != float.PositiveInfinity && v.X != float.NegativeInfinity && v.X != float.NaN &&
-            v.Y != float.PositiveInfinity && v.Y != float.NegativeInfinity && v.Y != float.NaN;
+            v.X != float.PositiveInfinity && v.X != float.NegativeInfinity && !float.IsNaN(v.X) &&
+            v.Y != float.PositiveInfinity && v.Y != float.NegativeInfinity && !float.IsNaN(v.Y);
 
         public static Vector3 Clamp(this Vector3 v, Vector3 limit) => new(
             Math.Clamp(v.X, -limit.X, limit.X),

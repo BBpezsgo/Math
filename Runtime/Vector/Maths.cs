@@ -5,17 +5,17 @@ namespace Maths
 {
     public static partial class Vector
     {
-        public static System.Numerics.Vector3 IntersectPlane(System.Numerics.Vector3 planePoint, System.Numerics.Vector3 planeNormal, System.Numerics.Vector3 lineStart, System.Numerics.Vector3 lineEnd)
+        public static Vector3 IntersectPlane(Vector3 planePoint, Vector3 planeNormal, Vector3 lineStart, Vector3 lineEnd)
             => Vector.IntersectPlane(planePoint, planeNormal, lineStart, lineEnd, out _);
-        public static System.Numerics.Vector3 IntersectPlane(System.Numerics.Vector3 planePoint, System.Numerics.Vector3 planeNormal, System.Numerics.Vector3 lineStart, System.Numerics.Vector3 lineEnd, out float t)
+        public static Vector3 IntersectPlane(Vector3 planePoint, Vector3 planeNormal, Vector3 lineStart, Vector3 lineEnd, out float t)
         {
-            planeNormal = System.Numerics.Vector3.Normalize(planeNormal);
-            float planeD = -System.Numerics.Vector3.Dot(planeNormal, planePoint);
-            float ad = System.Numerics.Vector3.Dot(lineStart, planeNormal);
-            float bd = System.Numerics.Vector3.Dot(lineEnd, planeNormal);
+            planeNormal = Vector3.Normalize(planeNormal);
+            float planeD = -Vector3.Dot(planeNormal, planePoint);
+            float ad = Vector3.Dot(lineStart, planeNormal);
+            float bd = Vector3.Dot(lineEnd, planeNormal);
             t = (-planeD - ad) / (bd - ad);
-            System.Numerics.Vector3 lineStartToEnd = lineEnd - lineStart;
-            System.Numerics.Vector3 lineToIntersect = lineStartToEnd * t;
+            Vector3 lineStartToEnd = lineEnd - lineStart;
+            Vector3 lineToIntersect = lineStartToEnd * t;
             return lineStart + lineToIntersect;
         }
 
@@ -30,7 +30,7 @@ namespace Maths
 
         public static Vector2 LinearLerp(Vector2 a, Vector2 b, float t) => (a * (1f - t)) + (b * t);
 
-        public static System.Numerics.Vector3 LinearLerp(System.Numerics.Vector3 a, System.Numerics.Vector3 b, float t) => (a * (1f - t)) + (b * t);
+        public static Vector3 LinearLerp(Vector3 a, Vector3 b, float t) => (a * (1f - t)) + (b * t);
 
         public static Vector2Int Round(this Vector2 vector) => new((int)MathF.Round(vector.X), (int)MathF.Round(vector.Y));
         public static Vector2Int Floor(this Vector2 vector) => new((int)MathF.Floor(vector.X), (int)MathF.Floor(vector.Y));

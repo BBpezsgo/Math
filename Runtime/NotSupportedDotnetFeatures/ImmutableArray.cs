@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
 #if UNITY
 
-namespace Maths
+namespace System.Collections.Immutable
 {
     public static class ImmutableArray
     {

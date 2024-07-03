@@ -1,14 +1,14 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Globalization;
 
 #nullable enable
 
 namespace Maths
 {
-    [DebuggerDisplay("{{" + nameof(GetDebuggerDisplay) + "(),nq}}")]
     public partial struct Vector2Int : IEquatable<Vector2Int>
     {
+        public static readonly Vector2Int Zero = new(0);
+        public static readonly Vector2Int One = new(1);
+
         public int X;
         public int Y;
 
@@ -34,20 +34,9 @@ namespace Maths
 
 #endif
 
-        public override readonly bool Equals(object? obj) =>
-            obj is Vector2Int vector &&
-            Equals(vector);
-        public readonly bool Equals(Vector2Int other) =>
-            X == other.X &&
-            Y == other.Y;
-        public override readonly int GetHashCode()
-            => HashCode.Combine(X, Y);
-
-        public override readonly string ToString()
-            => $"({X.ToString("0.00", CultureInfo.InvariantCulture)}, {Y.ToString("0.00", CultureInfo.InvariantCulture)})";
-        readonly string GetDebuggerDisplay() => ToString();
-
-        public static Vector2Int Zero => new(0);
-        public static Vector2Int One => new(1);
+        public override readonly bool Equals(object? obj) => obj is Vector2Int other && Equals(other);
+        public readonly bool Equals(Vector2Int other) => X == other.X && Y == other.Y;
+        public override readonly int GetHashCode() => HashCode.Combine(X, Y);
+        public override readonly string ToString() => $"({X}, {Y})";
     }
 }

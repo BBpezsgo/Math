@@ -8,7 +8,7 @@ namespace Maths
 {
     public struct Matrix2x2 :
         IMatrix<Matrix2x2>,
-        IMultiplyOperators<Matrix2x2, System.Numerics.Vector2, System.Numerics.Vector2>
+        IMultiplyOperators<Matrix2x2, Vector2, Vector2>
     {
         const int Rows = 2;
         const int Columns = 2;
@@ -116,7 +116,7 @@ namespace Maths
             a._10 * b, a._11 * b
         );
 
-        public static System.Numerics.Vector2 operator *(Matrix2x2 a, System.Numerics.Vector2 b) => new(
+        public static Vector2 operator *(Matrix2x2 a, Vector2 b) => new(
             (a[0, 0] * b.X) + (a[0, 1] * b.Y),
             (a[1, 0] * b.X) + (a[1, 1] * b.Y)
         );

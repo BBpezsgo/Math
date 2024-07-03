@@ -86,13 +86,13 @@ namespace Maths
 
         #region Convertions
 
-        public static implicit operator Point4(System.Numerics.Vector2 v) => new(v.X, v.Y, 0f);
-        public static implicit operator Point4(System.Numerics.Vector3 v) => new(v.X, v.Y, v.Z);
-        public static implicit operator Point4(System.Numerics.Vector4 v) => new(v.X, v.Y, v.Z, v.W);
+        public static implicit operator Point4(Vector2 v) => new(v.X, v.Y, 0f);
+        public static implicit operator Point4(Vector3 v) => new(v.X, v.Y, v.Z);
+        public static implicit operator Point4(Vector4 v) => new(v.X, v.Y, v.Z, v.W);
 
-        public static implicit operator System.Numerics.Vector2(Point4 v) => new(v.X, v.Y);
-        public static implicit operator System.Numerics.Vector3(Point4 v) => new(v.X, v.Y, v.Z);
-        public static implicit operator System.Numerics.Vector4(Point4 v) => new(v.X, v.Y, v.Z, v.W);
+        public static implicit operator Vector2(Point4 v) => new(v.X, v.Y);
+        public static implicit operator Vector3(Point4 v) => new(v.X, v.Y, v.Z);
+        public static implicit operator Vector4(Point4 v) => new(v.X, v.Y, v.Z, v.W);
 
 #if UNITY
 
