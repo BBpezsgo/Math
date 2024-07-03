@@ -107,12 +107,5 @@ namespace Maths
             while (visit.HasNext)
             { yield return values[(int)visit.Next()]; }
         }
-
-        public static IEnumerable<T> Disorder<T>(this ReadOnlySpan<T> values)
-        {
-            VisitInDisorder visit = new(values.Length);
-            while (visit.HasNext)
-            { yield return values[(int)visit.Next()]; }
-        }
     }
 }
