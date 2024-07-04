@@ -10,3 +10,4 @@
 [assembly: SuppressMessage("Roslynator", "RCS1073:Convert 'if' to 'return' statement")]
 [assembly: SuppressMessage("Style", "IDE0028:Simplify collection initialization")]
 [assembly: SuppressMessage("Style", "IDE0305:Simplify collection initialization")]
+[assembly: ExcludeFromCodeCoverage]
