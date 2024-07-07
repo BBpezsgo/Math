@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Numerics;
-using System.Runtime.CompilerServices;
 
 namespace Maths
 {
@@ -13,19 +12,15 @@ namespace Maths
         }
 #endif
 
-        /// <summary>
-        /// This is positive
-        /// </summary>
 #if UNITY
-        public static float G => Math.Abs(UnityEngine.Physics.gravity.y);
+        public static readonly float GForce = UnityEngine.Physics.gravity.y;
+        public static readonly Vector2 GVector2 = new(0f, GForce);
+        public static readonly Vector3 GVector3 = UnityEngine.Physics.gravity.To();
 #else
-        public static float G => 9.80665f;
+        public const float GForce = -9.80665f;
+        public static readonly Vector2 GVector2 = new(0f, GForce);
+        public static readonly Vector3 GVector3 = new(0f, GForce, 0f);
 #endif
-
-        /// <summary>
-        /// This points downwards
-        /// </summary>
-        public static Vector2 GVector => new(0f, -G);
 
         public readonly struct Trajectory
         {
@@ -38,26 +33,14 @@ namespace Maths
             /// </summary>
             public readonly float Direction;
             public readonly float Velocity;
-            public readonly Vector3 StartPosition;
+            public readonly Vector3 Origin;
 
             public Trajectory(float angle, float direction, float velocity, Vector3 startPosition)
             {
                 Angle = angle;
                 Direction = direction;
                 Velocity = velocity;
-                StartPosition = startPosition;
-            }
-
-            public Vector2 Velocity2D()
-                => new(Velocity * MathF.Cos(Angle * Rotation.Deg2Rad), Velocity * MathF.Sin(Angle * Rotation.Deg2Rad));
-
-            public Vector3 Velocity3D()
-            {
-                Vector3 result = default;
-                result.X = MathF.Sin(Direction * Rotation.Deg2Rad);
-                result.Y = MathF.Sin(Angle * Rotation.Deg2Rad);
-                result.Z = MathF.Cos(Direction * Rotation.Deg2Rad);
-                return result;
+                Origin = startPosition;
             }
 
             public Vector3 Position(float t)
@@ -69,61 +52,71 @@ namespace Maths
                 displacement3D.Y = displacement.Y;
                 displacement3D.Z = displacement.X * MathF.Cos(Direction * Rotation.Deg2Rad);
 
-                displacement3D += StartPosition;
+                displacement3D += Origin;
 
                 return displacement3D;
             }
-
-            public static Vector2 TransformPositionToPlane(Vector3 position, float directionRad) => new()
-            {
-                Y = position.Y,
-                X = (position.X * MathF.Cos(directionRad)) + (position.Y * MathF.Sin(directionRad)),
-            };
         }
 
 #if UNITY
         public static Vector3? PredictImpact(UnityEngine.Transform shootPosition, float projectileVelocity, float projectileLifetime, out bool outOfRange)
         {
             outOfRange = false;
-            float? _relativeHitDistance;
             float angle = -shootPosition.eulerAngles.x;
 
-            using (Ballistics.ProfilerMarkers.TrajectoryMath.Auto())
-            { _relativeHitDistance = Ballistics.CalculateX(angle * Rotation.Deg2Rad, projectileVelocity, shootPosition.position.y); }
-            if (!_relativeHitDistance.HasValue) return null;
-            float relativeHitDistance = _relativeHitDistance.Value;
+            float? _hitDistance = Ballistics.CalculateX(angle * Rotation.Deg2Rad, projectileVelocity, 0f);
+            if (!_hitDistance.HasValue) return null;
+            float hitDistance = _hitDistance.Value;
 
-            Vector3 turretRotation = shootPosition.forward.To().Flatten();
-            Vector3 point = shootPosition.position.To() + (relativeHitDistance * turretRotation);
+            Vector3 flatForward = shootPosition.forward.To().Flatten();
+            Vector3 point = shootPosition.position.To() + (hitDistance * flatForward);
             point.Y = 0f;
 
             if (projectileLifetime > 0f)
             {
-                Vector2 maxHitDistance;
-                using (Ballistics.ProfilerMarkers.TrajectoryMath.Auto())
-                { maxHitDistance = Ballistics.Displacement(angle * Rotation.Deg2Rad, projectileVelocity, projectileLifetime); }
-
-                if (maxHitDistance.X < relativeHitDistance)
+                Vector2 maxHitDistance = Ballistics.Displacement(angle * Rotation.Deg2Rad, projectileVelocity, projectileLifetime);
+                if (maxHitDistance.X < hitDistance)
                 {
                     outOfRange = true;
-                    point = shootPosition.position.To() + (maxHitDistance.X * turretRotation);
+                    point = shootPosition.position.To() + (maxHitDistance.X * flatForward);
                     point.Y = maxHitDistance.Y;
                 }
             }
-
-            // point.Y = Maths.Max(point.Y, TheTerrain.Height(point));
 
             return point;
         }
 #endif
 
-        /// <param name="v">
-        /// Projectile's initial velocity
-        /// </param>
-        public static float? CalculateTime(float v, float angle, float heightDisplacement)
+        public static void GetTrajectory(Vector3 velocity, Span<Vector3> trajectory, float timeStep)
         {
-            float a = v * MathF.Sin(angle);
-            float b = 2 * G * heightDisplacement;
+            for (int i = 0; i < trajectory.Length; i++)
+            { trajectory[i] = Displacement(velocity, i * timeStep); }
+        }
+
+        public static void GetTrajectory(Vector3 origin, Vector3 velocity, Span<Vector3> trajectory, float timeStep)
+        {
+            for (int i = 0; i < trajectory.Length; i++)
+            { trajectory[i] = origin + Displacement(velocity, i * timeStep); }
+        }
+
+#if UNITY
+        public static void GetTrajectory(UnityEngine.Vector3 velocity, Span<UnityEngine.Vector3> trajectory, float timeStep)
+        {
+            for (int i = 0; i < trajectory.Length; i++)
+            { trajectory[i] = Displacement(velocity, i * timeStep); }
+        }
+
+        public static void GetTrajectory(UnityEngine.Vector3 origin, UnityEngine.Vector3 velocity, Span<UnityEngine.Vector3> trajectory, float timeStep)
+        {
+            for (int i = 0; i < trajectory.Length; i++)
+            { trajectory[i] = origin + Displacement(velocity, i * timeStep); }
+        }
+#endif
+
+        public static float? CalculateTime(float velocity, float angleRad, float heightDisplacement)
+        {
+            float a = velocity * MathF.Sin(angleRad);
+            float b = 2 * -GForce * heightDisplacement;
 
             float discriminant = (a * a) + b;
             if (discriminant < 0)
@@ -133,7 +126,7 @@ namespace Maths
 
             float sqrt = MathF.Sqrt(discriminant);
 
-            return (a + sqrt) / G;
+            return (a + sqrt) / -GForce;
         }
 
         /*
@@ -168,54 +161,40 @@ namespace Maths
         }
         */
 
-        /// <param name="v">Initial velocity</param>
-        /// <param name="target">Position of the target</param>
         /// <returns>
         /// The required <b>angle in radians</b> to hit a <paramref name="target"/>
-        /// fired <paramref name="from"/> initial projectile speed <paramref name="v"/>
+        /// fired from <paramref name="origin"/> initial projectile speed <paramref name="velocity"/>
         /// </returns>
-        public static (float, float)? AngleOfReach(float v, Vector3 from, Vector3 target)
+        public static (float, float)? AngleOfReach(float velocity, Vector3 origin, Vector3 target)
         {
-            Vector3 diff = target - from;
+            Vector3 diff = target - origin;
             float y = diff.Y;
             float x = MathF.Sqrt((diff.X * diff.X) + (diff.Z * diff.Z));
-            return Ballistics.AngleOfReach(v, new Vector2(x, y));
+            return Ballistics.AngleOfReach(velocity, new Vector2(x, y));
         }
 
-        /// <param name="v">
-        /// Projectile's initial velocity
-        /// </param>
-        /// <param name="target">
-        /// Position of the target in <b>world space</b>
-        /// </param>
         /// <returns>
         /// The required <b>angle in radians</b> to hit a <paramref name="target"/>
-        /// fired <paramref name="from"/> initial projectile speed <paramref name="v"/>
+        /// fired from <paramref name="origin"/> initial projectile speed <paramref name="velocity"/>
         /// </returns>
-        public static float? AngleOfReach1(float v, Vector3 from, Vector3 target)
+        public static float? AngleOfReach1(float velocity, Vector3 origin, Vector3 target)
         {
-            Vector3 diff = target - from;
+            Vector3 diff = target - origin;
             float y = diff.Y;
             float x = MathF.Sqrt((diff.X * diff.X) + (diff.Z * diff.Z));
-            return Ballistics.AngleOfReach1(v, new Vector2(x, y));
+            return Ballistics.AngleOfReach1(velocity, new Vector2(x, y));
         }
 
-        /// <param name="v">
-        /// Projectile's initial velocity
-        /// </param>
-        /// <param name="target">
-        /// Position of the target in <b>world space</b>
-        /// </param>
         /// <returns>
         /// The required <b>angle in radians</b> to hit a <paramref name="target"/>
-        /// fired <paramref name="from"/> initial projectile speed <paramref name="v"/>
+        /// fired from <paramref name="origin"/> initial projectile speed <paramref name="velocity"/>
         /// </returns>
-        public static float? AngleOfReach2(float v, Vector3 from, Vector3 target)
+        public static float? AngleOfReach2(float velocity, Vector3 origin, Vector3 target)
         {
-            Vector3 diff = target - from;
+            Vector3 diff = target - origin;
             float y = diff.Y;
             float x = MathF.Sqrt((diff.X * diff.X) + (diff.Z * diff.Z));
-            return Ballistics.AngleOfReach2(v, new Vector2(x, y));
+            return Ballistics.AngleOfReach2(velocity, new Vector2(x, y));
         }
 
         /*
@@ -249,41 +228,41 @@ namespace Maths
         }
         */
 
-        public static float? CalculateX(float angle, float v, float heightDisplacement)
+        public static float? CalculateX(float angleRad, float velocity, float heightDisplacement)
         {
-            float? t = CalculateTime(v, angle, heightDisplacement);
+            float? time = CalculateTime(velocity, angleRad, heightDisplacement);
 
-            if (t.HasValue)
-            { return DisplacementX(angle, t.Value, v); }
+            if (time.HasValue)
+            { return DisplacementX(angleRad, time.Value, velocity); }
 
             return null;
         }
 
-        public static float CalculateY(float angleRad, float t, float v)
-            => (v * MathF.Sin(angleRad) * t) - (G * t * t / 2f);
+        public static float CalculateY(float angleRad, float time, float velocity)
+            => (velocity * MathF.Sin(angleRad) * time) + (GForce * time * time / 2f);
 
-        public static float CalculateTimeToMaxHeight(float angleRad, float v)
-            => v * MathF.Sin(angleRad) / G;
+        public static float CalculateTimeToMaxHeight(float angleRad, float velocity)
+            => velocity * MathF.Sin(angleRad) / -GForce;
 
         /// <summary>
-        /// To hit a target at range x and altitude y when fired from (0,0) and with initial speed v.
+        /// To hit a target at range <c><paramref name="target"/>.x</c> and altitude <c><paramref name="target"/>.y</c> when fired from <c>(0,0)</c> and with initial speed <paramref name="velocity"/>.
         /// </summary>
-        public static (float, float)? AngleOfReach(float v, Vector2 target)
+        public static (float, float)? AngleOfReach(float velocity, Vector2 target)
         {
-            float v2 = v * v;
+            float v2 = velocity * velocity;
 
             float x = target.X;
             float y = target.Y;
 
-            float discriminant = (v2 * v2) - (G * ((G * x * x) + (2 * y * v2)));
+            float discriminant = (v2 * v2) - (-GForce * ((-GForce * x * x) + (2 * y * v2)));
 
             if (discriminant < 0f)
             { return null; }
 
             float dSqrt = MathF.Sqrt(discriminant);
 
-            float a = (v2 + dSqrt) / (G * x);
-            float b = (v2 - dSqrt) / (G * x);
+            float a = (v2 + dSqrt) / (-GForce * x);
+            float b = (v2 - dSqrt) / (-GForce * x);
 
             float a_ = MathF.Atan(a);
             float b_ = MathF.Atan(b);
@@ -292,69 +271,65 @@ namespace Maths
         }
 
         /// <summary>
-        /// To hit a <paramref name="target"/> at range <c>x</c> and altitude <c>y</c> when fired from <c>(0,0)</c> and with initial speed <paramref name="v"/>.
+        /// To hit a target at range <c><paramref name="target"/>.x</c> and altitude <c><paramref name="target"/>.y</c> when fired from <c>(0,0)</c> and with initial speed <paramref name="velocity"/>.
         /// </summary>
-        public static float? AngleOfReach1(float v, Vector2 target)
+        public static float? AngleOfReach1(float velocity, Vector2 target)
         {
-            float v2 = v * v;
+            float v2 = velocity * velocity;
 
             float x = target.X;
             float y = target.Y;
 
-            float discriminant = (v2 * v2) - (G * ((G * x * x) + (2 * y * v2)));
+            float discriminant = (v2 * v2) - (-GForce * ((-GForce * x * x) + (2 * y * v2)));
 
             if (discriminant < 0f)
             { return null; }
 
             float dSqrt = MathF.Sqrt(discriminant);
 
-            float a = (v2 + dSqrt) / (G * x);
+            float a = (v2 + dSqrt) / (-GForce * x);
 
             return MathF.Atan(a);
         }
 
         /// <summary>
-        /// To hit a <paramref name="target"/> at range <c>x</c> and altitude <c>y</c> when fired from <c>(0,0)</c> and with initial speed <paramref name="v"/>.
+        /// To hit a target at range <c><paramref name="target"/>.x</c> and altitude <c><paramref name="target"/>.y</c> when fired from <c>(0,0)</c> and with initial speed <paramref name="velocity"/>.
         /// </summary>
-        public static float? AngleOfReach2(float v, Vector2 target)
+        public static float? AngleOfReach2(float velocity, Vector2 target)
         {
-            float v2 = v * v;
+            float v2 = velocity * velocity;
 
             float x = target.X;
             float y = target.Y;
 
-            float discriminant = (v2 * v2) - (G * ((G * x * x) + (2 * y * v2)));
+            float discriminant = (v2 * v2) - (-GForce * ((-GForce * x * x) + (2 * y * v2)));
 
             if (discriminant < 0f)
             { return null; }
 
             float dSqrt = MathF.Sqrt(discriminant);
 
-            float b = (v2 - dSqrt) / (G * x);
+            float b = (v2 - dSqrt) / (-GForce * x);
 
             return MathF.Atan(b);
         }
 
-        /// <param name="angleRad">Launch angle</param>
-        /// <param name="v">Initial velocity</param>
         /// <returns>The greatest height that the object will reach</returns>
-        public static float MaxHeight(float angleRad, float v)
-            => v * v * MathF.Pow(MathF.Sin(angleRad), 2f) / (2f * G);
+        public static float MaxHeight(float angleRad, float velocity)
+            => velocity * velocity * MathF.Pow(MathF.Sin(angleRad), 2f) / (2f * -GForce);
 
         /// <summary>
         /// <para>
-        /// The "angle of reach" is the angle at which a projectile must be launched in order to go a distance <paramref name="d"/>, given the initial velocity <paramref name="v"/>.
+        /// The angle at which a projectile must be launched in order to go a distance <paramref name="distance"/>, given the initial velocity <paramref name="velocity"/>.
         /// </para>
         /// <para>
         /// <seealso href="https://en.wikipedia.org/wiki/Projectile_motion#Angle_of_reach"/>
         /// </para>
         /// </summary>
-        /// <param name="v">Initial velocity</param>
-        /// <param name="d">Target distance</param>
         /// <returns><c>(shallow, steep)</c> in radians or <c><see langword="null"/></c> if there is no solution</returns>
-        public static (float, float)? AngleOfReach(float v, float d)
+        public static (float, float)? AngleOfReach(float velocity, float distance)
         {
-            float a = G * d / v * v;
+            float a = -GForce * distance / velocity * velocity;
 
             if (a is < (-1f) or > 1f) return null;
 
@@ -364,60 +339,54 @@ namespace Maths
             return (shallow, steep);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Radius(float v, float angleRad)
-            => v * v / G * MathF.Sin(angleRad * 2f);
+        public static float Radius(float velocity, float angleRad)
+            => velocity * velocity / -GForce * MathF.Sin(angleRad * 2f);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float MaxRadius(float v)
-            => v * v / G;
+        public static float MaxRadius(float velocity)
+            => velocity * velocity / -GForce;
 
-        /// <param name="angleRad">Launch angle</param>
-        /// <param name="v">Initial velocity</param>
-        /// <param name="t">Time</param>
-        /// <returns>The velocity after time <paramref name="t"/> or <c><see langword="null"/></c> if there is no solution</returns>
-        public static float? Velocity(float angleRad, float v, float t)
+        /// <returns>The velocity after time <paramref name="time"/> or <c><see langword="null"/></c> if there is no solution</returns>
+        public static float? Velocity(float angleRad, float velocity, float time)
         {
-            float vx = v * MathF.Cos(angleRad);
-            float vy = (v * MathF.Sin(angleRad)) - (G * t);
+            float vx = velocity * MathF.Cos(angleRad);
+            float vy = (velocity * MathF.Sin(angleRad)) + (GForce * time);
             float a = (vx * vx) + (vy * vy);
             if (a < 0f)
             { return null; }
             return MathF.Sqrt(a);
         }
 
-        /// <param name="angleRad">Launch angle</param>
-        /// <param name="v">Initial velocity</param>
-        /// <param name="t">Time</param>
-        public static Vector2 Displacement(float angleRad, float v, float t)
+        public static Vector2 Displacement(Vector2 velocity, float time)
+            => (velocity * time) + (.5f * time * time * GVector2);
+
+        public static Vector3 Displacement(Vector3 velocity, float time)
+            => (velocity * time) + (.5f * time * time * GVector3);
+
+#if UNITY
+        public static UnityEngine.Vector3 Displacement(UnityEngine.Vector3 velocity, float time)
+            => (velocity * time) + (.5f * time * time * UnityEngine.Physics.gravity);
+#endif
+
+        public static Vector2 Displacement(float angleRad, float velocity, float time)
         {
-            float x = v * t * MathF.Cos(angleRad);
-            float y = (v * t * MathF.Sin(angleRad)) - (0.5f * G * t * t);
+            float x = velocity * time * MathF.Cos(angleRad);
+            float y = (velocity * time * MathF.Sin(angleRad)) + (0.5f * GForce * time * time);
             return new Vector2(x, y);
         }
 
-        /// <param name="angleRad">Launch angle</param>
-        /// <param name="v">Initial velocity</param>
-        /// <param name="t">Time</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float DisplacementX(float angleRad, float v, float t)
-            => v * t * MathF.Cos(angleRad);
+        public static float DisplacementX(float angleRad, float velocity, float time)
+            => velocity * time * MathF.Cos(angleRad);
 
-        /// <param name="angleRad">Launch angle</param>
-        /// <param name="v">Initial velocity</param>
-        /// <param name="t">Time</param>
-        public static float DisplacementY(float angleRad, float v, float t)
-            => (v * t * MathF.Sin(angleRad)) - (0.5f * G * t * t);
+        public static float DisplacementY(float angleRad, float velocity, float time)
+            => (velocity * time * MathF.Sin(angleRad)) + (0.5f * GForce * time * time);
 
-        /// <param name="angleRad">Launch angle</param>
-        /// <param name="displacement">Displacement</param>
         /// <returns>The initial velocity or <c><see langword="null"/></c> if there is no solution</returns>
         public static float? InitialVelocity(float angleRad, Vector2 displacement)
         {
             float x = displacement.X;
             float y = displacement.Y;
 
-            float a = x * x * G;
+            float a = x * x * -GForce;
             float b = x * MathF.Sin(angleRad * 2f);
             float c = 2f * y * MathF.Pow(MathF.Cos(angleRad), 2f);
             float d = a / (b - c);
@@ -426,11 +395,10 @@ namespace Maths
             return MathF.Sqrt(d);
         }
 
-        public static float MaxRadius(float v, float heightDisplacement)
+        public static float MaxRadius(float velocity, float heightDisplacement)
         {
-            float t = CalculateTime(v, 45f * Rotation.Deg2Rad, heightDisplacement) ?? throw new Exception();
-            float x = DisplacementX(45f * Rotation.Deg2Rad, t, v);
-            return x;
+            float t = CalculateTime(velocity, 45f * Rotation.Deg2Rad, heightDisplacement) ?? throw new Exception();
+            return DisplacementX(45f * Rotation.Deg2Rad, t, velocity);
         }
 
         /// <summary>
@@ -441,27 +409,19 @@ namespace Maths
         /// <seealso href="https://en.wikipedia.org/wiki/Projectile_motion#Time_of_flight_or_total_time_of_the_whole_journey"/>
         /// </para>
         /// </summary>
-        /// <param name="v">Initial velocity</param>
-        /// <param name="angleRad">Launch angle</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float TimeOfFlight(float v, float angleRad)
-            => 2f * v * MathF.Sin(angleRad) / G;
+        public static float TimeOfFlight(float velocity, float angleRad)
+            => 2f * velocity * MathF.Sin(angleRad) / -GForce;
 
-        public static float? TimeToReachDistance(float v, float angleRad, float d)
+        public static float? TimeToReachDistance(float velocity, float angleRad, float distance)
         {
-            float a = v * MathF.Cos(angleRad);
+            float a = velocity * MathF.Cos(angleRad);
             if (a <= 0f)
             { return null; }
-            return d / a;
+            return distance / a;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float MaxHeight2(float d, float angleRad)
-            => d * MathF.Tan(angleRad) / 4;
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector2 GetPosition(Vector2 v, float t)
-            => (v * t) + (t * t * GVector / 2);
+        public static float MaxHeight2(float distance, float angleRad)
+            => distance * MathF.Tan(angleRad) / 4;
 
         /// <summary>
         /// <para>
@@ -471,90 +431,76 @@ namespace Maths
         /// <c>y = (tan θ) * x – g (x ^ 2) / 2 * (v * cos θ) ^ 2</c>
         /// </para>
         /// </summary>
-        public static float GetHeight(float d, float angleRad, float v)
+        public static float GetHeight(float distance, float angleRad, float velocity)
         {
-            float a = MathF.Tan(angleRad) * d;
-            float b = G * d * d;
-            float c = MathF.Pow(v * MathF.Cos(angleRad), 2) * 2f;
+            float a = MathF.Tan(angleRad) * distance;
+            float b = -GForce * distance * distance;
+            float c = MathF.Pow(velocity * MathF.Cos(angleRad), 2) * 2f;
             return a - (b / c);
         }
 
 #if UNITY
 
-        public static (Vector3 PredictedPosition, float TimeToReach)? CalculateInterceptCourse(float projectileVelocity, float projectileLifetime, Vector3 shootPosition, Trajectory targetTrajectory)
+        public static (Vector3 PredictedPosition, float TimeToReach)? CalculateInterceptCourse(float velocity, float lifetime, Vector3 origin, Trajectory targetTrajectory)
         {
             float? angle_;
             float? t;
             Vector3 targetPosition;
             const int iterations = 3;
 
-            using (ProfilerMarkers.TrajectoryMath.Auto())
+            float? projectileTimeOfFlight = Ballistics.CalculateTime(targetTrajectory.Velocity, targetTrajectory.Angle * Rotation.Deg2Rad, targetTrajectory.Origin.Y);
+
+            if (projectileTimeOfFlight.HasValue && (projectileTimeOfFlight - lifetime) < .5f)
+            { return null; }
+
+            targetPosition = targetTrajectory.Position(lifetime);
+
+            float distance = Vector2.Distance(origin.To2D(), targetPosition.To2D());
+
+            angle_ = Ballistics.AngleOfReach2(velocity, origin, targetPosition);
+
+            t = angle_.HasValue ? Ballistics.TimeToReachDistance(velocity, angle_.Value, distance) : null;
+
+            for (int i = 0; i < iterations; i++)
             {
-                // projectileVelocity *= .95f;
+                if (!angle_.HasValue) break;
+                if (!t.HasValue) break;
 
-                float lifetime = projectileLifetime + UnityEngine.Time.fixedDeltaTime;
+                targetPosition = targetTrajectory.Position(lifetime + t.Value);
 
-                float? projectileTimeOfFlight = Ballistics.CalculateTime(targetTrajectory.Velocity, targetTrajectory.Angle * Rotation.Deg2Rad, targetTrajectory.StartPosition.Y);
+                distance = Vector2.Distance(origin.To2D(), targetPosition.To2D());
 
-                if (projectileTimeOfFlight.HasValue && (projectileTimeOfFlight - lifetime) < .5f)
-                { return null; }
+                angle_ = Ballistics.AngleOfReach2(velocity, origin, targetPosition);
 
-                targetPosition = targetTrajectory.Position(lifetime);
-
-                float distance = Vector2.Distance(shootPosition.To2D(), targetPosition.To2D());
-
-                angle_ = Ballistics.AngleOfReach2(projectileVelocity, shootPosition, targetPosition);
-
-                t = angle_.HasValue ? Ballistics.TimeToReachDistance(projectileVelocity, angle_.Value, distance) : null;
-
-                for (int i = 0; i < iterations; i++)
-                {
-                    if (!angle_.HasValue) break;
-                    if (!t.HasValue) break;
-
-                    targetPosition = targetTrajectory.Position(lifetime + t.Value);
-
-                    distance = Vector2.Distance(shootPosition.To2D(), targetPosition.To2D());
-
-                    angle_ = Ballistics.AngleOfReach2(projectileVelocity, shootPosition, targetPosition);
-
-                    t = angle_.HasValue ? Ballistics.TimeToReachDistance(projectileVelocity, angle_.Value, distance) : null;
-                }
+                t = angle_.HasValue ? Ballistics.TimeToReachDistance(velocity, angle_.Value, distance) : null;
             }
 
             return (targetPosition, t!.Value);
         }
-        
+
 #endif
 
-        public static Vector2? CalculateInterceptCourse(Vector2 projectilePosition, float projectileVelocity, Vector2 targetPosition, Vector2 targetVelocity)
+        public static Vector2? CalculateInterceptCourse(Vector2 origin, float velocity, Vector2 targetPosition, Vector2 targetVelocity)
         {
             float time = 0f;
             const int iterations = 3;
             Vector2 targetOriginalPosition = targetPosition;
 
-            float height = projectilePosition.Y - targetPosition.Y;
+            float height = origin.Y - targetPosition.Y;
 
-#if UNITY
-            using (ProfilerMarkers.TrajectoryMath.Auto())
-#endif
+            for (int i = 0; i < iterations; i++)
             {
-                // projectileVelocity *= .95f;
+                float? _angle = Ballistics.AngleOfReach2(velocity, origin.To3(), targetPosition.To3());
+                if (!_angle.HasValue)
+                { return null; }
+                float angle = _angle.Value;
 
-                for (int i = 0; i < iterations; i++)
-                {
-                    float? _angle = Ballistics.AngleOfReach2(projectileVelocity, projectilePosition.To3(), targetPosition.To3());
-                    if (!_angle.HasValue)
-                    { return null; }
-                    float angle = _angle.Value;
+                float? _time = Ballistics.CalculateTime(velocity, angle, height);
+                if (!_time.HasValue)
+                { return null; }
+                time = _time.Value;
 
-                    float? _time = Ballistics.CalculateTime(projectileVelocity, angle, height);
-                    if (!_time.HasValue)
-                    { return null; }
-                    time = _time.Value;
-
-                    targetPosition = targetOriginalPosition + (targetVelocity * time);
-                }
+                targetPosition = targetOriginalPosition + (targetVelocity * time);
             }
 
             return targetVelocity * time;

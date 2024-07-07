@@ -419,7 +419,7 @@ namespace Maths
             public readonly float Circumference()
                 => MathF.PI * 2 * Radius;
 
-            public static Span<Vector2> GenerateEquadistancePoints(int n, float radius)
+            public static Span<Vector2> GenerateEquidistancePoints(int n, float radius)
             {
                 List<Vector2> points = new();
 

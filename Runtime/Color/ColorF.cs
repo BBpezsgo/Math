@@ -260,5 +260,44 @@ namespace Maths
             float gray = threshold - (x * m);
             return new ColorF(gray + (x * R), gray + (x * G), gray + (x * B));
         }
+
+        public static (float C, float M, float Y, float K) ToCMYK(ColorF color)
+        {
+            float k = MathF.Min(255 - color.R, MathF.Min(1f - color.G, 1f - color.B));
+            float c = 1f * (1f - color.R - k) / (1f - k);
+            float m = 1f * (1f - color.G - k) / (1f - k);
+            float y = 1f * (1f - color.B - k) / (1f - k);
+            return (c, m, y, k);
+        }
+
+        public static ColorF ToRGB(float c, float m, float y, float k)
+        {
+            float r = -((c * (1f - k)) / 1f + k - 1f);
+            float g = -((m * (1f - k)) / 1f + k - 1f);
+            float b = -((y * (1f - k)) / 1f + k - 1f);
+            return new ColorF(r, g, b);
+        }
+
+        public static ColorF MixCMYK(ColorF a, ColorF b)
+        {
+            var _a = ToCMYK(a);
+            var _b = ToCMYK(b);
+            return ToRGB(_a.C + _b.C, _a.M + _b.M, _a.Y + _b.Y, _a.K + _b.K);
+        }
+
+        public static ColorF Sqrt(ColorF color) => new(MathF.Sqrt(color.R), MathF.Sqrt(color.G), MathF.Sqrt(color.B));
+#if UNITY
+        public static UnityEngine.Color Sqrt(UnityEngine.Color color) => new(MathF.Sqrt(color.r), MathF.Sqrt(color.g), MathF.Sqrt(color.b));
+#endif
+
+        public static ColorF CoolLerp(ColorF a, ColorF b, float t)
+        {
+            float at = MathF.Min(1f, (t - 1f) * -2f);
+            float bt = MathF.Min(1f, t * 2f);
+            float cr = MathF.Min((a.R * at) + (b.R * bt), 1f);
+            float cg = MathF.Min((a.G * at) + (b.G * bt), 1f);
+            float cb = MathF.Min((a.B * at) + (b.B * bt), 1f);
+            return new ColorF(cr, cg, cb);
+        }
     }
 }

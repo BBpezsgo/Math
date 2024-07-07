@@ -1,4 +1,4 @@
-﻿namespace Maths
+﻿namespace System.Numerics
 {
 #if !LANG_11
     internal interface IAdditionOperators<TSelf, TOther, TResult> { }

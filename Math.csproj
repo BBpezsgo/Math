@@ -10,8 +10,11 @@
 
   <ItemGroup>
     <Compile Remove="NotSupportedDotnetFeatures\**" />
+    <Compile Remove="Temp~\**" />
     <EmbeddedResource Remove="NotSupportedDotnetFeatures\**" />
+    <EmbeddedResource Remove="Temp~\**" />
     <None Remove="NotSupportedDotnetFeatures\**" />
+    <None Remove="Temp~\**" />
   </ItemGroup>
 
   <ItemGroup>
