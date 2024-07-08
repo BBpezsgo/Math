@@ -82,6 +82,13 @@ namespace Maths
             return result;
         }
 
+#if LANG_11
+
+        public static T Max<T>(T a, T b) where T : IComparisonOperators<T, T, bool> => a > b ? a : b;
+        public static T Min<T>(T a, T b) where T : IComparisonOperators<T, T, bool> => a < b ? a : b;
+
+#endif
+
 #if LANG_13
 
         public static float Min(params ReadOnlySpan<float> values)
@@ -588,8 +595,8 @@ namespace Maths
             return angleDeg;
         }
 
-        public static float MapToRange(float percent, Range @in) => MapToRange(percent, @in.A, @in.B);
-        public static float MapToRange(float value, Range @in, Range @out) => MapToRange(value, @in.A, @in.B, @out.A, @out.B);
+        public static float MapToRange(float percent, RangeF @in) => MapToRange(percent, @in.Start, @in.End);
+        public static float MapToRange(float value, RangeF @in, RangeF @out) => MapToRange(value, @in.Start, @in.End, @out.Start, @out.End);
 
         public static float MapToRange(float percent, float outMin, float outMax) => outMin + ((outMax - outMin) * percent);
         public static float MapToRange(float value, float inMin, float inMax, float outMin, float outMax) => outMin + ((outMax - outMin) / (inMax - inMin) * (value - inMin));

@@ -96,9 +96,9 @@ namespace Maths
     {
         public static IEnumerable<int> Disorder(this RangeInt range)
         {
-            VisitInDisorder visit = new(range.B - range.A);
+            VisitInDisorder visit = new(range.End - range.Start);
             while (visit.HasNext)
-            { yield return (int)(visit.Next() + range.A); }
+            { yield return (int)(visit.Next() + range.Start); }
         }
 
         public static IEnumerable<T> Disorder<T>(this IReadOnlyList<T> values)
