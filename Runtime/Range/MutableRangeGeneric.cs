@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Numerics;
 
+#nullable enable
+
 namespace Maths
 {
     public struct MutableRange<T> :
@@ -29,7 +31,7 @@ namespace Maths
         public bool Equals(MutableRange<T> other) => Start.Equals(other.Start) && End.Equals(other.End);
         public bool Equals(Range<T> other) => Start.Equals(other.Start) && End.Equals(other.End);
         public bool Equals(T start, T end) => Start.Equals(start) && End.Equals(end);
-        public bool Equals(T? other) => Start.Equals(other) && End.Equals(other);
+        public bool Equals(T? other) => other is not null && Start.Equals(other) && End.Equals(other);
 
         public override readonly int GetHashCode() => HashCode.Combine(Start, End);
         public override readonly string ToString() => $"({Start} -> {End})";

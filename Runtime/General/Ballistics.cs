@@ -177,24 +177,24 @@ namespace Maths
         /// The required <b>angle in radians</b> to hit a <paramref name="target"/>
         /// fired from <paramref name="origin"/> initial projectile speed <paramref name="velocity"/>
         /// </returns>
-        public static float? AngleOfReach1(float velocity, Vector3 origin, Vector3 target)
+        public static float? AngleOfReachHigh(float velocity, Vector3 origin, Vector3 target)
         {
             Vector3 diff = target - origin;
             float y = diff.Y;
             float x = MathF.Sqrt((diff.X * diff.X) + (diff.Z * diff.Z));
-            return Ballistics.AngleOfReach1(velocity, new Vector2(x, y));
+            return Ballistics.AngleOfReachHigh(velocity, new Vector2(x, y));
         }
 
         /// <returns>
         /// The required <b>angle in radians</b> to hit a <paramref name="target"/>
         /// fired from <paramref name="origin"/> initial projectile speed <paramref name="velocity"/>
         /// </returns>
-        public static float? AngleOfReach2(float velocity, Vector3 origin, Vector3 target)
+        public static float? AngleOfReachLow(float velocity, Vector3 origin, Vector3 target)
         {
             Vector3 diff = target - origin;
             float y = diff.Y;
             float x = MathF.Sqrt((diff.X * diff.X) + (diff.Z * diff.Z));
-            return Ballistics.AngleOfReach2(velocity, new Vector2(x, y));
+            return Ballistics.AngleOfReachLow(velocity, new Vector2(x, y));
         }
 
         /*
@@ -273,7 +273,7 @@ namespace Maths
         /// <summary>
         /// To hit a target at range <c><paramref name="target"/>.x</c> and altitude <c><paramref name="target"/>.y</c> when fired from <c>(0,0)</c> and with initial speed <paramref name="velocity"/>.
         /// </summary>
-        public static float? AngleOfReach1(float velocity, Vector2 target)
+        public static float? AngleOfReachHigh(float velocity, Vector2 target)
         {
             float v2 = velocity * velocity;
 
@@ -295,7 +295,7 @@ namespace Maths
         /// <summary>
         /// To hit a target at range <c><paramref name="target"/>.x</c> and altitude <c><paramref name="target"/>.y</c> when fired from <c>(0,0)</c> and with initial speed <paramref name="velocity"/>.
         /// </summary>
-        public static float? AngleOfReach2(float velocity, Vector2 target)
+        public static float? AngleOfReachLow(float velocity, Vector2 target)
         {
             float v2 = velocity * velocity;
 
@@ -457,7 +457,7 @@ namespace Maths
 
             float distance = Vector2.Distance(origin.To2D(), targetPosition.To2D());
 
-            angle_ = Ballistics.AngleOfReach2(velocity, origin, targetPosition);
+            angle_ = Ballistics.AngleOfReachLow(velocity, origin, targetPosition);
 
             t = angle_.HasValue ? Ballistics.TimeToReachDistance(velocity, angle_.Value, distance) : null;
 
@@ -470,7 +470,7 @@ namespace Maths
 
                 distance = Vector2.Distance(origin.To2D(), targetPosition.To2D());
 
-                angle_ = Ballistics.AngleOfReach2(velocity, origin, targetPosition);
+                angle_ = Ballistics.AngleOfReachLow(velocity, origin, targetPosition);
 
                 t = angle_.HasValue ? Ballistics.TimeToReachDistance(velocity, angle_.Value, distance) : null;
             }
@@ -490,7 +490,7 @@ namespace Maths
 
             for (int i = 0; i < iterations; i++)
             {
-                float? _angle = Ballistics.AngleOfReach2(velocity, origin.To3(), targetPosition.To3());
+                float? _angle = Ballistics.AngleOfReachLow(velocity, origin.To3(), targetPosition.To3());
                 if (!_angle.HasValue)
                 { return null; }
                 float angle = _angle.Value;

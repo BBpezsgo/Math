@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Numerics;
 
+#nullable enable
+
 namespace Maths
 {
     public readonly struct Range<T> :
@@ -28,7 +30,7 @@ namespace Maths
         public override bool Equals(object? obj) => obj is Range<T> other && Equals(other);
         public bool Equals(Range<T> other) => Start.Equals(other.Start) && End.Equals(other.End);
         public bool Equals(T start, T end) => Start.Equals(start) && End.Equals(end);
-        public bool Equals(T? other) => Start.Equals(other) && End.Equals(other);
+        public bool Equals(T? other) => other is not null && Start.Equals(other) && End.Equals(other);
         public bool Equals(ValueTuple<T, T> other) => Start.Equals(other.Item1) && End.Equals(other.Item2);
 
         public override readonly int GetHashCode() => HashCode.Combine(Start, End);

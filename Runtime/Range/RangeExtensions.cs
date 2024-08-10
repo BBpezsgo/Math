@@ -7,6 +7,8 @@ namespace Maths
 {
     public static class RangeExtensions
     {
+#if LANG_11
+        
         public static bool IsBackward<T>(this Range<T> range)
             where T : IEquatable<T>, IComparisonOperators<T, T, bool>
             => range.Start > range.End;
@@ -32,7 +34,6 @@ namespace Maths
             range = range.Fix();
             return range.Start <= value && range.End >= value;
         }
-
         public static bool Overlaps<T>(this MutableRange<T> a, MutableRange<T> b)
             where T : IEquatable<T>, IComparisonOperators<T, T, bool>
             => RangeUtils.Overlaps(a, b);
@@ -64,6 +65,8 @@ namespace Maths
         public static Range<TRange> Offset<TRange, TOffset>(this Range<TRange> v, TOffset offset)
             where TRange : IEquatable<TRange>, IAdditionOperators<TRange, TOffset, TRange>
             => new(v.Start + offset, v.End + offset);
+
+#endif
 
         public static IEnumerable<int> ForEach(this Range<int> a)
         {

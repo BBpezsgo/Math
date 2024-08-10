@@ -1,11 +1,12 @@
 ﻿namespace System.Numerics
 {
 #if !LANG_11
-    internal interface IAdditionOperators<TSelf, TOther, TResult> { }
-    internal interface ISubtractionOperators<TSelf, TOther, TResult> { }
-    internal interface IEqualityOperators<TSelf, TOther, TResult> { }
-    internal interface IDivisionOperators<TSelf, TOther, TResult> { }
-    internal interface IMultiplyOperators<TSelf, TOther, TResult> { }
-    internal interface IMultiplicativeIdentity<TSelf, TResult> { }
+    public interface IAdditionOperators<TSelf, TOther, TResult> { }
+    public interface ISubtractionOperators<TSelf, TOther, TResult> { }
+    public interface IEqualityOperators<TSelf, TOther, TResult> { }
+    public interface IDivisionOperators<TSelf, TOther, TResult> { }
+    public interface IMultiplyOperators<TSelf, TOther, TResult> { }
+    public interface IComparisonOperators<TSelf, TOther, TResult> { }
+    public interface IMultiplicativeIdentity<TSelf, TResult> { }
 #endif
 }

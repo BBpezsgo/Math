@@ -1,10 +1,14 @@
 ﻿using System;
+#if LANG_11
 using System.Numerics;
+#endif
 
 namespace Maths
 {
     public static class RangeUtils
     {
+#if LANG_11
+
         public static bool Overlaps<T>(MutableRange<T> a, MutableRange<T> b)
             where T : IEquatable<T>, IComparisonOperators<T, T, bool>
         {
@@ -60,16 +64,25 @@ namespace Maths
             { return new Range<T>(start, end); }
         }
 
+#endif
+
         #region Union
+
+#if LANG_11
 
         public static Range<T> Union<T>(Range<T> a, T b) where T : IEquatable<T>, IComparisonOperators<T, T, bool>
             => new(General.Min(a.Start, b), General.Max(a.End, b));
         public static MutableRange<T> Union<T>(MutableRange<T> a, T b) where T : IEquatable<T>, IComparisonOperators<T, T, bool>
             => new(General.Min(a.Start, b), General.Max(a.End, b));
+
+#endif
+
         public static RangeF Union(RangeF a, float b)
             => new(Math.Min(a.Start, b), Math.Max(a.End, b));
         public static RangeInt Union(RangeInt a, int b)
             => new(Math.Min(a.Start, b), Math.Max(a.End, b));
+
+#if LANG_11
 
         public static Range<T> Union<T>(Range<T> a, Range<T> b) where T : IEquatable<T>, IComparisonOperators<T, T, bool>
             => new(General.Min(a.Start, b.Start), General.Max(a.End, b.End));
@@ -77,6 +90,9 @@ namespace Maths
             => new(General.Min(a.Start, b.Start), General.Max(a.End, b.End));
         public static MutableRange<T> Union<T>(MutableRange<T> a, MutableRange<T> b) where T : IEquatable<T>, IComparisonOperators<T, T, bool>
             => new(General.Min(a.Start, b.Start), General.Max(a.End, b.End));
+
+#endif
+
         public static RangeF Union(RangeF a, RangeF b)
             => new(Math.Min(a.Start, b.Start), Math.Max(a.End, b.End));
         public static RangeInt Union(RangeInt a, RangeInt b)
