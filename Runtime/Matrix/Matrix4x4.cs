@@ -257,7 +257,7 @@ namespace Maths
 
         #endregion
 
-        #region Convertions
+        #region Conversions
 
         // public static implicit operator Matrix4x4(Matrix4x4 m) => new(
         //     m._00, m._01, m._02, m._03,

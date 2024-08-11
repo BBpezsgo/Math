@@ -84,7 +84,7 @@ namespace Maths
 
         #endregion
 
-        #region Convertions
+        #region Conversions
 
         public static implicit operator Point4(Vector2 v) => new(v.X, v.Y, 0f);
         public static implicit operator Point4(Vector3 v) => new(v.X, v.Y, v.Z);

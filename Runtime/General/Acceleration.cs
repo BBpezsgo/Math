@@ -156,8 +156,8 @@ namespace Maths
 
         public static float CalculateTime(float initialVelocity, float topVelocity, float timeToSpeedUp, float distance, float acceleration)
         {
-            float distanceTravelledUntilMaxSpeed = DistanceAfterTime(initialVelocity, acceleration, timeToSpeedUp);
-            float timeWithMaxVelocity = Velocity.CalculateTime(distance - distanceTravelledUntilMaxSpeed, topVelocity);
+            float distanceTraveledUntilMaxSpeed = DistanceAfterTime(initialVelocity, acceleration, timeToSpeedUp);
+            float timeWithMaxVelocity = Velocity.CalculateTime(distance - distanceTraveledUntilMaxSpeed, topVelocity);
             return timeToSpeedUp + timeWithMaxVelocity;
         }
 
