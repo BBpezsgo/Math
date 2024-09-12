@@ -1,16 +1,5 @@
 {
-    "cSpell.words": [
-        "Adjugate",
-        "Cofactor",
-        "Coprime",
-        "Denormal",
-        "fract",
-        "GLSL",
-        "Lerp",
-        "Mathf",
-        "Quantizer",
-        "Rects",
-        "Unskew",
-        "unskewed"
-    ]
+    "files.exclude": {
+        "**/*.meta": true,
+    }
 }
