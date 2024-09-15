@@ -1,5 +1,4 @@
 ﻿#pragma warning disable IDE0032 // Use auto property
-#pragma warning disable RCS1085 // Use auto-implemented property
 #pragma warning disable CS0809 // Obsolete member overrides non-obsolete member
 
 using System;

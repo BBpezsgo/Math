@@ -9,7 +9,7 @@ namespace Maths
         public float this[int r, int c] { get; set; }
     }
 
-    internal interface IMatrix<TSelf> :
+    public interface IMatrix<TSelf> :
         IMatrix,
         IEquatable<TSelf>,
         IMultiplyOperators<TSelf, TSelf, TSelf>,
@@ -20,14 +20,14 @@ namespace Maths
         public TSelf Transpose();
     }
 
-    internal interface ILargeMatrix : IMatrix
+    public interface ILargeMatrix : IMatrix
     {
         public float Minor(int x, int y);
         public float Cofactor(int r, int c);
         public float Det();
     }
 
-    internal interface ILargeMatrix<TSelf, TSmaller>
+    public interface ILargeMatrix<TSelf, TSmaller>
         : IMatrix<TSelf>,
         ILargeMatrix
         where TSelf : ILargeMatrix<TSelf, TSmaller>

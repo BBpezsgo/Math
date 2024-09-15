@@ -1,0 +1,57 @@
+# EditorConfig is awesome: https://EditorConfig.org
+
+# top-most EditorConfig file
+root = true
+
+[*]
+indent_style = space
+indent_size = 4
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = false
+insert_final_newline = false
+
+# IDE0130: Namespace does not match folder structure
+dotnet_style_namespace_match_folder = false
+
+# IDE0023: Use block body for conversion operator
+csharp_style_expression_bodied_operators = true
+
+# IDE0022: Use block body for method
+csharp_style_expression_bodied_methods = true
+
+# IDE0045: Convert to conditional expression
+dotnet_diagnostic.IDE0045.severity = silent
+
+# IDE0011: Add braces
+csharp_prefer_braces = when_multiline
+
+# IDE0040: Add accessibility modifiers
+dotnet_style_require_accessibility_modifiers = omit_if_default
+
+# IDE0004: Remove Unnecessary Cast
+dotnet_diagnostic.IDE0004.severity = silent
+
+# IDE0046: Convert to conditional expression
+dotnet_diagnostic.IDE0046.severity = silent
+
+# IDE0028: Simplify collection initialization
+dotnet_style_collection_initializer = false
+
+# IDE0305: Simplify collection initialization
+dotnet_style_prefer_collection_expression = never
+
+# IDE0022: Use expression body for method
+dotnet_diagnostic.IDE0022.severity = silent
+
+# IDE0290: Use primary constructor
+csharp_style_prefer_primary_constructors = false
+
+# IDE0058: Expression value is never used
+dotnet_diagnostic.IDE0058.severity = silent
+
+# IDE0180: Use tuple to swap values
+csharp_style_prefer_tuple_swap = false
+
+# IDE0061: Use block body for local function
+dotnet_diagnostic.IDE0061.severity = silent

@@ -1,14 +1,14 @@
-﻿using System.Collections.Generic;
+﻿#if UNITY
 
-#if UNITY
+using System.Collections.Generic;
 
 namespace System.Collections.Immutable
 {
     public static class ImmutableArray
     {
-        internal static ImmutableArray<T> Create<T>(Span<T> values) => new(values.ToArray());
-        internal static ImmutableArray<T> Create<T>(ReadOnlySpan<T> values) => new(values.ToArray());
-        internal static ImmutableArray<T> Create<T>(params T[] values) => new(values);
+        public static ImmutableArray<T> Create<T>(Span<T> values) => new(values.ToArray());
+        public static ImmutableArray<T> Create<T>(ReadOnlySpan<T> values) => new(values.ToArray());
+        public static ImmutableArray<T> Create<T>(params T[] values) => new(values);
     }
 
     public readonly struct ImmutableArray<T> : IEnumerable<T>

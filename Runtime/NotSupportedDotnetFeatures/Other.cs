@@ -1,6 +1,6 @@
-﻿using System;
+﻿#if UNITY
 
-#if UNITY
+using System;
 
 namespace Maths
 {

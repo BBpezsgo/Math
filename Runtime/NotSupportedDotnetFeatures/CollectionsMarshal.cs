@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿#if UNITY
 
-#if UNITY
+using System;
+using System.Collections.Generic;
 
 namespace Maths
 {

@@ -1,7 +1,7 @@
+#if UNITY
+
 using System.Collections.Generic;
 using System.Collections.Immutable;
-
-#if UNITY
 
 namespace System.Linq
 {

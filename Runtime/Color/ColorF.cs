@@ -272,9 +272,9 @@ namespace Maths
 
         public static ColorF ToRGB(float c, float m, float y, float k)
         {
-            float r = -((c * (1f - k)) / 1f + k - 1f);
-            float g = -((m * (1f - k)) / 1f + k - 1f);
-            float b = -((y * (1f - k)) / 1f + k - 1f);
+            float r = -((c * (1f - k) / 1f) + k - 1f);
+            float g = -((m * (1f - k) / 1f) + k - 1f);
+            float b = -((y * (1f - k) / 1f) + k - 1f);
             return new ColorF(r, g, b);
         }
 

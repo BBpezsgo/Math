@@ -1,5 +1,4 @@
 ﻿#pragma warning disable IDE0032 // Use auto property
-#pragma warning disable RCS1085 // Use auto-implemented property
 
 using System;
 using System.Collections;

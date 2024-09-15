@@ -1,6 +1,6 @@
-﻿using System.Collections.Immutable;
+﻿#if UNITY
 
-#if UNITY
+using System.Collections.Immutable;
 
 namespace Maths
 {

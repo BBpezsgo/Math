@@ -8,7 +8,7 @@ namespace Maths
     public static class RangeExtensions
     {
 #if LANG_11
-        
+
         public static bool IsBackward<T>(this Range<T> range)
             where T : IEquatable<T>, IComparisonOperators<T, T, bool>
             => range.Start > range.End;
