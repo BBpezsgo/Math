@@ -64,6 +64,58 @@ namespace Maths
             { return new Range<T>(start, end); }
         }
 
+#else
+
+        public static bool Overlaps(MutableRange<int> a, MutableRange<int> b)
+        {
+            int maxStart = General.Max(a.Start, b.Start);
+            int minEnd = General.Min(a.End, b.End);
+            return maxStart <= minEnd;
+        }
+
+        public static bool Overlaps(Range<int> a, Range<int> b)
+        {
+            int maxStart = General.Max(a.Start, b.Start);
+            int minEnd = General.Min(a.End, b.End);
+            return maxStart <= minEnd;
+        }
+
+        public static bool Inside(Range<int> outer, Range<int> inner)
+        {
+            outer = outer.Fix();
+            inner = inner.Fix();
+            return inner.Start >= outer.Start && inner.End <= outer.End;
+        }
+
+        public static bool Inside(MutableRange<int> outer, MutableRange<int> inner)
+        {
+            outer = outer.Fix();
+            inner = inner.Fix();
+            return inner.Start >= outer.Start && inner.End <= outer.End;
+        }
+
+        public static Range<int> Intersect(Range<int> a, Range<int> b)
+        {
+            bool isBackward = a.IsBackward();
+
+            if (a.IsBackward() != b.IsBackward())
+            { b = new Range<int>(b.End, b.Start); }
+
+            if (isBackward)
+            {
+                a = new Range<int>(a.End, a.Start);
+                b = new Range<int>(b.End, b.Start);
+            }
+
+            int start = General.Max(a.Start, b.Start);
+            int end = General.Min(a.End, b.End);
+
+            if (isBackward)
+            { return new Range<int>(end, start); }
+            else
+            { return new Range<int>(start, end); }
+        }
+
 #endif
 
         #region Union

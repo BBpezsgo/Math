@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+#nullable enable
+
 namespace Maths
 {
     public class Frequency<T> : IEnumerable<KeyValuePair<T, int>> where T : notnull
