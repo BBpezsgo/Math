@@ -7,28 +7,11 @@
     <DefineConstants>LANG_10;LANG_11;LANG_12;LANG_13</DefineConstants>
     <LangVersion>preview</LangVersion>
     <AnalysisLevel>preview-all</AnalysisLevel>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <WarningLevel>9999</WarningLevel>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <WarningLevel>9999</WarningLevel>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="NotSupportedDotnetFeatures\**" />
-    <Compile Remove="Temp~\**" />
-    <EmbeddedResource Remove="NotSupportedDotnetFeatures\**" />
-    <EmbeddedResource Remove="Temp~\**" />
-    <None Remove="NotSupportedDotnetFeatures\**" />
-    <None Remove="Temp~\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="Math.asmdef" />
-    <None Remove="package.json" />
+    <None Remove="Unity" />
     <None Remove="**/*.meta" />
   </ItemGroup>
 

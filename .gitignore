@@ -1,6 +1,5 @@
 ﻿bin
 obj
-.vs
 *.sln
 *.meta
-/Temp~
+/Unity/Runtime/Source
