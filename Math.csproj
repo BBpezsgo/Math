@@ -11,7 +11,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Unity" />
+    <Compile Remove="Unity/**" />
+    <EmbeddedResource Remove="Unity/**" />
+    <None Remove="Unity/**" />
     <None Remove="**/*.meta" />
   </ItemGroup>
 
