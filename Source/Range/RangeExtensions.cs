@@ -123,5 +123,9 @@ namespace Maths
             else
             { return Enumerable.Range(a.Start, a.End - a.Start); }
         }
+
+        public static MutableRange<T> ToMutable<T>(this Range<T> v)
+            where T : IEquatable<T>
+            => new(v.Start, v.End);
     }
 }
