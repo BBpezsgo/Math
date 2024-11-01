@@ -31,14 +31,14 @@ namespace Maths
         }
 
         public static float Float() => (float)Shared.NextDouble();
-        public static float Float(float max) => Shared.Float() * max;
-        public static float Float(float min, float max) => (Shared.Float() * (max - min)) + min;
-        public static float Float(RangeF range) => (Shared.Float() * (range.End - range.Start)) + range.Start;
+        public static float Float(float max) => (float)Shared.NextDouble() * max;
+        public static float Float(float min, float max) => ((float)Shared.NextDouble() * (max - min)) + min;
+        public static float Float(RangeF range) => ((float)Shared.NextDouble() * (range.End - range.Start)) + range.Start;
 
-        public static float Float(this System.Random random) => random.Float();
-        public static float Float(this System.Random random, float max) => random.Float() * max;
-        public static float Float(this System.Random random, float min, float max) => (random.Float() * (max - min)) + min;
-        public static float Float(this System.Random random, RangeF range) => (random.Float() * (range.End - range.Start)) + range.Start;
+        public static float Float(this System.Random random) => (float)random.NextDouble();
+        public static float Float(this System.Random random, float max) => (float)random.NextDouble() * max;
+        public static float Float(this System.Random random, float min, float max) => ((float)random.NextDouble() * (max - min)) + min;
+        public static float Float(this System.Random random, RangeF range) => ((float)random.NextDouble() * (range.End - range.Start)) + range.Start;
 
         public static Vector2 Direction()
         {
