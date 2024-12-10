@@ -19,9 +19,11 @@ namespace Maths
         ISubtractionOperators<ColorF, ColorF, ColorF>,
 
         IDivisionOperators<ColorF, float, ColorF>,
-        IMultiplyOperators<ColorF, float, ColorF>,
+        IMultiplyOperators<ColorF, float, ColorF>
 
-        IParsable<ColorF>
+#if !NETSTANDARD
+        ,IParsable<ColorF>
+#endif
     {
         public float R;
         public float G;
