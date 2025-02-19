@@ -165,6 +165,18 @@ namespace Maths
             (a[2, 0] * b.X) + (a[2, 1] * b.Y) + (a[2, 2] * b.Z)
         );
 
+        public static Matrix3x3 operator +(Matrix3x3 a, Matrix3x3 b) => new(
+            a._00 + b._00, a._01 + b._01, a._02 + b._02,
+            a._10 + b._10, a._11 + b._11, a._12 + b._12,
+            a._20 + b._20, a._21 + b._21, a._22 + b._22
+        );
+
+        public static Matrix3x3 operator -(Matrix3x3 a, Matrix3x3 b) => new(
+            a._00 - b._00, a._01 - b._01, a._02 - b._02,
+            a._10 - b._10, a._11 - b._11, a._12 - b._12,
+            a._20 - b._20, a._21 - b._21, a._22 - b._22
+        );
+
         public static bool operator ==(Matrix3x3 left, Matrix3x3 right) =>
             FloatUtils.FloatEquality(left._00, right._00) &&
             FloatUtils.FloatEquality(left._01, right._01) &&
